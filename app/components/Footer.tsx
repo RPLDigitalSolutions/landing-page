@@ -41,10 +41,10 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-xs">
-        <div className="space-y-4 sm:col-span-2 lg:col-span-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 text-xs">
+        <div className="space-y-4">
           <div className="flex flex-col items-start gap-2.5">
-            <div className="h-9 w-48 bg-black rounded-lg overflow-hidden flex items-center justify-center border border-black/10 shadow-xs p-1">
+            <div className="h-9 w-44 sm:w-48 bg-black rounded-lg overflow-hidden flex items-center justify-center border border-black/10 shadow-xs p-1">
               <img
                 src="/logo.png"
                 alt="RPL Digital Solutions Horizontal Logo"
@@ -112,61 +112,61 @@ export function Footer() {
             Tim Software Engineer
           </div>
           <ul className="space-y-3 text-[#4a4a4a]">
-            <li className="flex items-center justify-between">
-              <div>
-                <span className="text-black font-semibold block">Andika Dinata</span>
-                <span className="text-[10px] text-[#676767] font-mono">Staff Software Engineer</span>
+            <li className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <span className="text-black font-semibold block truncate">Andika Dinata</span>
+                <span className="text-[10px] text-[#676767] font-mono block truncate">Staff Software Engineer</span>
               </div>
               <a
                 href="https://github.com/andika0x01"
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#676767] hover:text-black"
+                className="text-[#676767] hover:text-black shrink-0 p-1"
                 title="GitHub Profil Andika Dinata"
               >
                 <GithubIcon className="w-4 h-4" />
               </a>
             </li>
-            <li className="flex items-center justify-between">
-              <div>
-                <span className="text-black font-semibold block">Aqil Fadhil Murbantresna</span>
-                <span className="text-[10px] text-[#676767] font-mono">Software Engineer</span>
+            <li className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <span className="text-black font-semibold block truncate">Aqil Fadhil Murbantresna</span>
+                <span className="text-[10px] text-[#676767] font-mono block truncate">Software Engineer</span>
               </div>
               <a
                 href="https://github.com/aqilfadhil1225"
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#676767] hover:text-black"
+                className="text-[#676767] hover:text-black shrink-0 p-1"
                 title="GitHub Profil Aqil Fadhil"
               >
                 <GithubIcon className="w-4 h-4" />
               </a>
             </li>
-            <li className="flex items-center justify-between">
-              <div>
-                <span className="text-black font-semibold block">Aziz Prayoga</span>
-                <span className="text-[10px] text-[#676767] font-mono">Software Engineer</span>
+            <li className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <span className="text-black font-semibold block truncate">Aziz Prayoga</span>
+                <span className="text-[10px] text-[#676767] font-mono block truncate">Software Engineer</span>
               </div>
               <a
                 href="https://github.com/AzizPrayoga1"
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#676767] hover:text-black"
+                className="text-[#676767] hover:text-black shrink-0 p-1"
                 title="GitHub Profil Aziz Prayoga"
               >
                 <GithubIcon className="w-4 h-4" />
               </a>
             </li>
-            <li className="flex items-center justify-between">
-              <div>
-                <span className="text-black font-semibold block">Muhammad Defrizal</span>
-                <span className="text-[10px] text-[#676767] font-mono">Software Engineer</span>
+            <li className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <span className="text-black font-semibold block truncate">Muhammad Defrizal</span>
+                <span className="text-[10px] text-[#676767] font-mono block truncate">Software Engineer</span>
               </div>
               <a
                 href="https://github.com/mhmddefrizal"
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#676767] hover:text-black"
+                className="text-[#676767] hover:text-black shrink-0 p-1"
                 title="GitHub Profil Muhammad Defrizal"
               >
                 <GithubIcon className="w-4 h-4" />

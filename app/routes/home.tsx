@@ -44,28 +44,28 @@ export default function Home() {
       <Navbar onOpenCommand={() => setCommandOpen(true)} />
 
       <main className="flex-1">
-        <section className="relative py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 border-b border-[#e5e7eb] bg-white">
+        <section className="relative py-10 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 border-b border-[#e5e7eb] bg-white">
           <div className="max-w-7xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#f4f5f7] border border-[#d0d5db] rounded-full text-[11px] sm:text-xs font-mono text-[#3b3b3b] mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#f4f5f7] border border-[#d0d5db] rounded-full text-[10px] min-[360px]:text-[11px] sm:text-xs font-mono text-[#3b3b3b] mb-6 max-w-full">
               <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shrink-0" />
-              <span className="font-semibold text-black">
+              <span className="font-semibold text-black truncate">
                 Software House & IT Consultant • Bandar Lampung
               </span>
             </div>
 
             <div className="max-w-4xl space-y-4 sm:space-y-6">
-              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold font-display tracking-tight text-black leading-[1.08] sm:leading-[1.05]">
+              <h1 className="text-2xl min-[360px]:text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold font-display tracking-tight text-black leading-[1.12] sm:leading-[1.05] break-words">
                 Rekayasa Perangkat Lunak & Arsitektur Digital.
               </h1>
 
-              <p className="text-sm sm:text-base md:text-xl text-[#4a4a4a] font-normal leading-relaxed max-w-2xl">
+              <p className="text-xs sm:text-base md:text-xl text-[#4a4a4a] font-normal leading-relaxed max-w-2xl">
                 Kami bantu Anda buat website, aplikasi HP, dan sistem digital — dari ide awal sampai jadi dan bisa dipakai.
               </p>
 
               <div className="pt-2 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
                 <button
                   onClick={() => openWhatsApp("Halo RPL Digital Solutions, saya ingin konsultasi proyek IT gratis.")}
-                  className="btn-tactile px-6 py-3.5 bg-black hover:bg-[#1a1a1a] text-white rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-sm"
+                  className="btn-tactile px-6 py-3.5 bg-black hover:bg-[#1a1a1a] text-white rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-sm w-full sm:w-auto"
                 >
                   <MessageSquare className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>Konsultasi Proyek Gratis</span>
@@ -73,7 +73,7 @@ export default function Home() {
 
                 <Link
                   to="/projects"
-                  className="btn-tactile px-6 py-3.5 bg-white hover:bg-[#f4f5f7] border border-[#d0d5db] text-black rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2"
+                  className="btn-tactile px-6 py-3.5 bg-white hover:bg-[#f4f5f7] border border-[#d0d5db] text-black rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-center"
                 >
                   <span>Lihat Portofolio Proyek</span>
                   <FolderGit2 className="w-4 h-4 text-[#4a4a4a] shrink-0" />
@@ -81,8 +81,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12 sm:mt-16 pt-8 sm:pt-10 border-t border-[#e5e7eb]">
-              <div className="bg-[#f9fafb] border border-[#e5e7eb] p-5 rounded-xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-10 sm:mt-16 pt-8 sm:pt-10 border-t border-[#e5e7eb]">
+              <div className="bg-[#f9fafb] border border-[#e5e7eb] p-5 rounded-xl flex flex-col justify-between">
                 <div className="text-[#676767] text-[10px] font-mono uppercase tracking-wider mb-1">
                   JENIS LAYANAN
                 </div>
@@ -90,7 +90,7 @@ export default function Home() {
                 <div className="text-[#676767] text-[11px] mt-1 font-sans">Website, App Android, IoT, AI, Server, Keamanan</div>
               </div>
 
-              <div className="bg-[#f9fafb] border border-[#e5e7eb] p-5 rounded-xl">
+              <div className="bg-[#f9fafb] border border-[#e5e7eb] p-5 rounded-xl flex flex-col justify-between">
                 <div className="text-[#676767] text-[10px] font-mono uppercase tracking-wider mb-1">
                   KEAMANAN DATA
                 </div>
@@ -98,7 +98,7 @@ export default function Home() {
                 <div className="text-[#676767] text-[11px] mt-1 font-sans">Data Anda dienkripsi & diuji dari celah</div>
               </div>
 
-              <div className="bg-[#f9fafb] border border-[#e5e7eb] p-5 rounded-xl">
+              <div className="bg-[#f9fafb] border border-[#e5e7eb] p-5 rounded-xl flex flex-col justify-between">
                 <div className="text-[#676767] text-[10px] font-mono uppercase tracking-wider mb-1">
                   UPTIME SERVER
                 </div>
@@ -106,7 +106,7 @@ export default function Home() {
                 <div className="text-[#676767] text-[11px] mt-1 font-sans">Aplikasi aktif 24 jam tanpa gangguan</div>
               </div>
 
-              <div className="bg-[#f9fafb] border border-[#e5e7eb] p-5 rounded-xl">
+              <div className="bg-[#f9fafb] border border-[#e5e7eb] p-5 rounded-xl flex flex-col justify-between">
                 <div className="text-[#676767] text-[10px] font-mono uppercase tracking-wider mb-1">
                   AKTIF SEJAK
                 </div>
@@ -142,7 +142,7 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs">
+              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs h-full">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="p-2.5 rounded-lg bg-[#f4f5f7] border border-[#e5e7eb] text-black">
@@ -169,7 +169,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs">
+              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs h-full">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="p-2.5 rounded-lg bg-[#f4f5f7] border border-[#e5e7eb] text-black">
@@ -196,7 +196,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs">
+              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs h-full">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="p-2.5 rounded-lg bg-[#f4f5f7] border border-[#e5e7eb] text-black">
@@ -223,7 +223,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs">
+              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs h-full">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="p-2.5 rounded-lg bg-[#f4f5f7] border border-[#e5e7eb] text-black">
@@ -250,7 +250,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs">
+              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs h-full">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="p-2.5 rounded-lg bg-[#f4f5f7] border border-[#e5e7eb] text-black">
@@ -277,7 +277,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs">
+              <div className="bg-white border border-[#d0d5db] hover:border-black rounded-xl p-5 sm:p-6 transition-all flex flex-col justify-between group shadow-xs h-full">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="p-2.5 rounded-lg bg-[#f4f5f7] border border-[#e5e7eb] text-black">
@@ -351,10 +351,10 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="flex flex-col justify-between items-start lg:items-end gap-6">
-                  <div className="text-right text-xs text-[#ababab] hidden lg:block font-mono">
+                <div className="flex flex-col justify-between items-start lg:items-end gap-4 sm:gap-6">
+                  <div className="text-left lg:text-right text-xs text-[#ababab] font-mono space-y-1">
                     <div>Status: Production Ready</div>
-                    <div>Licence: MIT Open Source</div>
+                    <div>Lisensi: MIT Open Source</div>
                   </div>
                   <a
                     href="https://github.com/RPLDigitalSolutions/money-tracker"
@@ -391,149 +391,149 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 space-y-4 flex flex-col justify-between">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 space-y-4 flex flex-col justify-between h-full">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex flex-wrap items-center justify-between text-xs gap-2">
                     <span className="text-[#676767]">Pengalaman Sejak 2022</span>
-                    <span className="text-black font-semibold flex items-center gap-1.5">
+                    <span className="text-black font-semibold flex items-center gap-1.5 shrink-0">
                       <span className="w-2 h-2 bg-emerald-500 rounded-full" />
                       Staff Software Engineer
                     </span>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 min-w-0">
                     <img
                       src="https://avatars.githubusercontent.com/u/73385158?v=4"
                       alt="Andika Dinata"
-                      className="w-14 h-14 rounded-xl object-cover border border-[#d0d5db] shrink-0"
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover border border-[#d0d5db] shrink-0"
                     />
-                    <div>
-                      <h3 className="text-base sm:text-lg font-bold font-display text-black">Andika Dinata</h3>
-                      <div className="text-xs text-[#676767]">Staff Software Engineer</div>
+                    <div className="min-w-0">
+                      <h3 className="text-base sm:text-lg font-bold font-display text-black truncate">Andika Dinata</h3>
+                      <div className="text-xs text-[#676767] truncate">Staff Software Engineer</div>
                     </div>
                   </div>
                   <p className="text-xs text-[#4a4a4a] leading-relaxed">
                     Bergerak di sistem informasi, keamanan siber, machine learning, dan embedded systems sejak 2022.
                   </p>
                 </div>
-                <div className="pt-3 border-t border-[#e5e7eb] flex items-center justify-between text-xs font-mono">
+                <div className="pt-3 border-t border-[#e5e7eb] flex flex-wrap items-center justify-between text-xs font-mono gap-2">
                   <span className="text-[#676767]">Bandar Lampung, Indonesia</span>
                   <a
                     href="https://github.com/andika0x01"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-black hover:text-[#4a4a4a] font-semibold flex items-center gap-1"
+                    className="text-black hover:text-[#4a4a4a] font-semibold flex items-center gap-1 shrink-0"
                   >
                     GitHub Profil <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                   </a>
                 </div>
               </div>
 
-              <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 space-y-4 flex flex-col justify-between">
+              <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 space-y-4 flex flex-col justify-between h-full">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex flex-wrap items-center justify-between text-xs gap-2">
                     <span className="text-[#676767]">Pengalaman Sejak 2022</span>
-                    <span className="text-black font-semibold flex items-center gap-1.5">
+                    <span className="text-black font-semibold flex items-center gap-1.5 shrink-0">
                       <span className="w-2 h-2 bg-emerald-500 rounded-full" />
                       Software Engineer
                     </span>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 min-w-0">
                     <img
                       src="https://avatars.githubusercontent.com/u/154386191?v=4"
                       alt="Aqil Fadhil Murbantresna"
-                      className="w-14 h-14 rounded-xl object-cover border border-[#d0d5db] shrink-0"
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover border border-[#d0d5db] shrink-0"
                     />
-                    <div>
-                      <h3 className="text-base sm:text-lg font-bold font-display text-black">Aqil Fadhil Murbantresna</h3>
-                      <div className="text-xs text-[#676767]">Software Engineer</div>
+                    <div className="min-w-0">
+                      <h3 className="text-base sm:text-lg font-bold font-display text-black truncate">Aqil Fadhil Murbantresna</h3>
+                      <div className="text-xs text-[#676767] truncate">Software Engineer</div>
                     </div>
                   </div>
                   <p className="text-xs text-[#4a4a4a] leading-relaxed">
                     Fokus pada arsitektur fullstack, cloud, dan integrasi IoT. Terbiasa bekerja dari desain sistem hingga deployment.
                   </p>
                 </div>
-                <div className="pt-3 border-t border-[#e5e7eb] flex items-center justify-between text-xs font-mono">
+                <div className="pt-3 border-t border-[#e5e7eb] flex flex-wrap items-center justify-between text-xs font-mono gap-2">
                   <span className="text-[#676767]">Bandar Lampung, Indonesia</span>
                   <a
                     href="https://github.com/aqilfadhil1225"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-black hover:text-[#4a4a4a] font-semibold flex items-center gap-1"
+                    className="text-black hover:text-[#4a4a4a] font-semibold flex items-center gap-1 shrink-0"
                   >
                     GitHub Profil <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                   </a>
                 </div>
               </div>
 
-              <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 space-y-4 flex flex-col justify-between">
+              <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 space-y-4 flex flex-col justify-between h-full">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex flex-wrap items-center justify-between text-xs gap-2">
                     <span className="text-[#676767]">Pengalaman Sejak 2022</span>
-                    <span className="text-black font-semibold flex items-center gap-1.5">
+                    <span className="text-black font-semibold flex items-center gap-1.5 shrink-0">
                       <span className="w-2 h-2 bg-emerald-500 rounded-full" />
                       Software Engineer
                     </span>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 min-w-0">
                     <img
                       src="https://github.com/AzizPrayoga1.png"
                       alt="Aziz Prayoga"
-                      className="w-14 h-14 rounded-xl object-cover border border-[#d0d5db] shrink-0"
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover border border-[#d0d5db] shrink-0"
                     />
-                    <div>
-                      <h3 className="text-base sm:text-lg font-bold font-display text-black">Aziz Prayoga</h3>
-                      <div className="text-xs text-[#676767]">Software Engineer</div>
+                    <div className="min-w-0">
+                      <h3 className="text-base sm:text-lg font-bold font-display text-black truncate">Aziz Prayoga</h3>
+                      <div className="text-xs text-[#676767] truncate">Software Engineer</div>
                     </div>
                   </div>
                   <p className="text-xs text-[#4a4a4a] leading-relaxed">
                     Mengerjakan web, backend API, dan keamanan siber (cybersecurity) — dengan perhatian khusus pada performa serta pengujian & audit keamanan sistem.
                   </p>
                 </div>
-                <div className="pt-3 border-t border-[#e5e7eb] flex items-center justify-between text-xs font-mono">
+                <div className="pt-3 border-t border-[#e5e7eb] flex flex-wrap items-center justify-between text-xs font-mono gap-2">
                   <span className="text-[#676767]">Bandar Lampung, Indonesia</span>
                   <a
                     href="https://github.com/AzizPrayoga1"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-black hover:text-[#4a4a4a] font-semibold flex items-center gap-1"
+                    className="text-black hover:text-[#4a4a4a] font-semibold flex items-center gap-1 shrink-0"
                   >
                     GitHub Profil <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                   </a>
                 </div>
               </div>
 
-              <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 space-y-4 flex flex-col justify-between">
+              <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 space-y-4 flex flex-col justify-between h-full">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex flex-wrap items-center justify-between text-xs gap-2">
                     <span className="text-[#676767]">Pengalaman Sejak 2022</span>
-                    <span className="text-black font-semibold flex items-center gap-1.5">
+                    <span className="text-black font-semibold flex items-center gap-1.5 shrink-0">
                       <span className="w-2 h-2 bg-emerald-500 rounded-full" />
                       Software Engineer
                     </span>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 min-w-0">
                     <img
                       src="https://github.com/mhmddefrizal.png"
                       alt="Muhammad Defrizal"
-                      className="w-14 h-14 rounded-xl object-cover border border-[#d0d5db] shrink-0"
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover border border-[#d0d5db] shrink-0"
                     />
-                    <div>
-                      <h3 className="text-base sm:text-lg font-bold font-display text-black">Muhammad Defrizal</h3>
-                      <div className="text-xs text-[#676767]">Software Engineer</div>
+                    <div className="min-w-0">
+                      <h3 className="text-base sm:text-lg font-bold font-display text-black truncate">Muhammad Defrizal</h3>
+                      <div className="text-xs text-[#676767] truncate">Software Engineer</div>
                     </div>
                   </div>
                   <p className="text-xs text-[#4a4a4a] leading-relaxed">
                     Spesialis pada pengembangan aplikasi, cloud serverless, dan pipeline CI/CD otomatis.
                   </p>
                 </div>
-                <div className="pt-3 border-t border-[#e5e7eb] flex items-center justify-between text-xs font-mono">
+                <div className="pt-3 border-t border-[#e5e7eb] flex flex-wrap items-center justify-between text-xs font-mono gap-2">
                   <span className="text-[#676767]">Bandar Lampung, Indonesia</span>
                   <a
                     href="https://github.com/mhmddefrizal"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-black hover:text-[#4a4a4a] font-semibold flex items-center gap-1"
+                    className="text-black hover:text-[#4a4a4a] font-semibold flex items-center gap-1 shrink-0"
                   >
                     GitHub Profil <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                   </a>

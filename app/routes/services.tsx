@@ -403,8 +403,8 @@ export default function Services() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
-                    <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+                    <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 flex flex-col justify-between gap-4 h-full">
                       <div className="space-y-3 flex-1">
                         <div className="flex items-center gap-2">
                           <Package className="w-4 h-4 text-[#676767] shrink-0" />
@@ -413,7 +413,7 @@ export default function Services() {
                           </span>
                         </div>
                         <div className="flex items-baseline gap-1">
-                          <span className="text-2xl font-bold font-display text-black">
+                          <span className="text-xl sm:text-2xl font-bold font-display text-black">
                             {srv.pricing.basic.price}
                           </span>
                         </div>
@@ -431,16 +431,16 @@ export default function Services() {
                       </div>
                       <button
                         onClick={() => openContact(srv.title, srv.pricing.basic.label)}
-                        className="btn-tactile w-full px-4 py-2.5 bg-white border border-[#d0d5db] hover:border-black text-black text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+                        className="btn-tactile w-full px-4 py-2.5 bg-white border border-[#d0d5db] hover:border-black text-black text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 mt-auto"
                       >
                         <span>Pilih Paket Basic</span>
                         <MessageSquare className="w-3.5 h-3.5 text-[#676767] shrink-0" />
                       </button>
                     </div>
 
-                    <div className="bg-black text-white rounded-2xl p-5 sm:p-6 flex flex-col gap-4 relative shadow-lg">
+                    <div className="bg-black text-white rounded-2xl p-5 sm:p-6 flex flex-col justify-between gap-4 relative shadow-lg h-full">
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span className="px-3 py-0.5 bg-emerald-500 text-black text-[10px] font-mono font-bold rounded-full uppercase tracking-wider">
+                        <span className="px-3 py-0.5 bg-emerald-500 text-black text-[10px] font-mono font-bold rounded-full uppercase tracking-wider whitespace-nowrap shadow-xs">
                           Paling Banyak Dipilih
                         </span>
                       </div>
@@ -452,7 +452,7 @@ export default function Services() {
                           </span>
                         </div>
                         <div className="flex items-baseline gap-1">
-                          <span className="text-2xl font-bold font-display text-white">
+                          <span className="text-xl sm:text-2xl font-bold font-display text-white">
                             {srv.pricing.standard.price}
                           </span>
                         </div>
@@ -470,14 +470,14 @@ export default function Services() {
                       </div>
                       <button
                         onClick={() => openContact(srv.title, srv.pricing.standard.label)}
-                        className="btn-tactile w-full px-4 py-2.5 bg-white text-black hover:bg-[#e5e7eb] text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-2"
+                        className="btn-tactile w-full px-4 py-2.5 bg-white text-black hover:bg-[#e5e7eb] text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-2 mt-auto"
                       >
                         <span>Pilih Paket Standar</span>
                         <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                       </button>
                     </div>
 
-                    <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
+                    <div className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-6 flex flex-col justify-between gap-4 h-full">
                       <div className="space-y-3 flex-1">
                         <div className="flex items-center gap-2">
                           <Zap className="w-4 h-4 text-[#3b3b3b] shrink-0" />
@@ -486,7 +486,7 @@ export default function Services() {
                           </span>
                         </div>
                         <div className="flex items-baseline gap-1">
-                          <span className="text-2xl font-bold font-display text-black">
+                          <span className="text-xl sm:text-2xl font-bold font-display text-black">
                             {srv.pricing.enterprise.price}
                           </span>
                         </div>
@@ -504,7 +504,7 @@ export default function Services() {
                       </div>
                       <button
                         onClick={() => openContact(srv.title, srv.pricing.enterprise.label)}
-                        className="btn-tactile w-full px-4 py-2.5 bg-[#f4f5f7] border border-[#d0d5db] hover:border-black text-black text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+                        className="btn-tactile w-full px-4 py-2.5 bg-[#f4f5f7] border border-[#d0d5db] hover:border-black text-black text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 mt-auto"
                       >
                         <span>Diskusikan Kebutuhan</span>
                         <MessageSquare className="w-3.5 h-3.5 shrink-0" />
@@ -535,7 +535,7 @@ export default function Services() {
               {workflowSteps.map((wf) => (
                 <div
                   key={wf.step}
-                  className="bg-[#f9fafb] border border-[#d0d5db] rounded-xl p-5 space-y-3 flex flex-col justify-between"
+                  className="bg-[#f9fafb] border border-[#d0d5db] rounded-xl p-5 space-y-3 flex flex-col justify-between h-full"
                 >
                   <div className="space-y-2">
                     <div className="text-xl font-bold font-display text-black font-mono">{wf.step}</div>

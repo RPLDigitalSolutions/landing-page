@@ -246,7 +246,7 @@ export default function About() {
                   <img
                     src="/logo.png"
                     alt="RPL Digital Solutions Horizontal Banner Logo"
-                    className="w-full h-full object-cover scale-[1.35] object-center"
+                    className="max-w-full max-h-full object-contain p-2"
                   />
                 </div>
 
@@ -295,7 +295,7 @@ export default function About() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-xs font-bold text-black font-mono uppercase tracking-wider">
                   <Award className="w-4 h-4 text-black shrink-0" />
@@ -328,7 +328,7 @@ export default function About() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5">
                 {visionMission.roadmap.map((r) => (
-                  <div key={r.year} className="bg-white border border-[#d0d5db] rounded-2xl p-4 space-y-2 shadow-xs flex flex-col justify-between">
+                  <div key={r.year} className="bg-white border border-[#d0d5db] rounded-2xl p-4 space-y-2 shadow-xs flex flex-col justify-between h-full">
                     <div>
                       <div className="text-xs font-mono font-bold text-black">{r.year}</div>
                       <div className="text-sm font-bold font-display text-black mt-0.5">{r.label}</div>
@@ -352,30 +352,30 @@ export default function About() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
               {teamMembers.map((member) => (
                 <div
                   key={member.id}
-                  className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-8 space-y-6 flex flex-col justify-between shadow-xs"
+                  className="bg-[#f9fafb] border border-[#d0d5db] rounded-2xl p-5 sm:p-8 space-y-6 flex flex-col justify-between shadow-xs h-full"
                 >
                   <div className="space-y-5 sm:space-y-6">
                     <div className="flex flex-wrap items-center justify-between border-b border-[#e5e7eb] pb-3 sm:pb-4 text-xs font-mono gap-2">
-                      <span className="text-[#676767]">{member.role}</span>
-                      <span className="text-black font-semibold flex items-center gap-1.5">
+                      <span className="text-[#676767] truncate">{member.role}</span>
+                      <span className="text-black font-semibold flex items-center gap-1.5 shrink-0">
                         <span className="w-2 h-2 bg-emerald-500 rounded-full" />
                         Aktif Sejak {member.activeSince}
                       </span>
                     </div>
 
-                    <div className="flex flex-col xs:flex-row items-start xs:items-center gap-4 sm:gap-5">
+                    <div className="flex flex-col xs:flex-row items-start xs:items-center gap-4 sm:gap-5 min-w-0">
                       <img
                         src={member.avatar}
                         alt={member.name}
                         className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border border-[#d0d5db] shrink-0"
                       />
-                      <div>
-                        <h3 className="text-xl sm:text-2xl font-bold font-display text-black">{member.name}</h3>
-                        <div className="text-xs text-[#676767] font-mono mt-0.5">{member.role}</div>
+                      <div className="min-w-0">
+                        <h3 className="text-xl sm:text-2xl font-bold font-display text-black truncate">{member.name}</h3>
+                        <div className="text-xs text-[#676767] font-mono mt-0.5 truncate">{member.role}</div>
                       </div>
                     </div>
 

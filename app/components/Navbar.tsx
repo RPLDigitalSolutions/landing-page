@@ -21,8 +21,8 @@ export function Navbar({ onOpenCommand, onOpenContact }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-[#e5e7eb]">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
-        <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-black rounded-xl flex items-center justify-center p-1 shadow-xs border border-black/10 group-hover:scale-105 group-hover:shadow-md transition-all duration-200 overflow-hidden shrink-0">
+        <Link to="/" className="flex items-center gap-2 sm:gap-3 group shrink-0 min-w-0">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-black rounded-xl flex items-center justify-center p-1 shadow-xs border border-black/10 group-hover:scale-105 group-hover:shadow-md transition-all duration-200 overflow-hidden shrink-0">
             <img
               src="/logo-1.png"
               alt="RPL Digital Solutions Logo"
@@ -31,10 +31,10 @@ export function Navbar({ onOpenCommand, onOpenContact }: NavbarProps) {
           </div>
 
           <div className="flex flex-col justify-center min-w-0">
-            <div className="text-[11px] sm:text-xs font-bold font-display tracking-tight text-black flex items-center gap-1.5 uppercase leading-none truncate">
+            <div className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-bold font-display tracking-tight text-black flex items-center gap-1.5 uppercase leading-none truncate">
               <span>RPL DIGITAL SOLUTIONS</span>
             </div>
-            <div className="text-[9px] sm:text-[10px] font-mono text-[#676767] mt-1 truncate">
+            <div className="text-[8.5px] min-[360px]:text-[9px] sm:text-[10px] font-mono text-[#676767] mt-0.5 sm:mt-1 truncate">
               Software Engineering Studio
             </div>
           </div>
@@ -83,10 +83,10 @@ export function Navbar({ onOpenCommand, onOpenContact }: NavbarProps) {
 
           <button
             onClick={() => (onOpenContact ? onOpenContact() : openWhatsApp())}
-            className="btn-tactile px-2.5 sm:px-3.5 py-1.5 bg-black hover:bg-[#1a1a1a] text-white rounded-lg text-xs font-sans font-medium transition-all shadow-xs flex items-center gap-1.5"
+            className="btn-tactile px-2 sm:px-3.5 py-1.5 bg-black hover:bg-[#1a1a1a] text-white rounded-lg text-xs font-sans font-medium transition-all shadow-xs flex items-center gap-1.5"
           >
             <MessageSquare className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span className="text-[11px] sm:text-xs">WhatsApp Kami</span>
+            <span className="text-[10px] min-[360px]:text-[11px] sm:text-xs">WhatsApp</span>
           </button>
 
           <button
@@ -100,7 +100,7 @@ export function Navbar({ onOpenCommand, onOpenContact }: NavbarProps) {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-[#e5e7eb] px-4 py-4 space-y-3 font-sans shadow-lg animate-in slide-in-from-top-2 duration-150">
+        <div className="md:hidden bg-white border-b border-[#e5e7eb] px-4 py-4 space-y-3 font-sans shadow-lg animate-in slide-in-from-top-2 duration-150 max-h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="space-y-1">
             {navItems.map((item) => (
               <NavLink

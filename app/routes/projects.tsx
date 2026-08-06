@@ -134,7 +134,7 @@ export default function Projects() {
                   <button
                     key={cat}
                     onClick={() => setActiveFilter(cat)}
-                    className={`px-3 py-1.5 text-xs rounded-md transition-all font-medium ${
+                    className={`px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs rounded-md transition-all font-medium ${
                       activeFilter === cat
                         ? "bg-black text-white font-semibold shadow-xs"
                         : "text-[#4a4a4a] hover:text-black hover:bg-white"
@@ -150,10 +150,10 @@ export default function Projects() {
               {filteredProjects.map((proj) => (
                 <div
                   key={proj.id}
-                  className="bg-[#f9fafb] border border-[#d0d5db] hover:border-black rounded-2xl p-5 sm:p-6 md:p-8 space-y-6 flex flex-col justify-between group transition-all shadow-xs"
+                  className="bg-[#f9fafb] border border-[#d0d5db] hover:border-black rounded-2xl p-5 sm:p-6 md:p-8 space-y-6 flex flex-col justify-between group transition-all shadow-xs h-full"
                 >
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between text-xs font-mono gap-2">
+                    <div className="flex flex-wrap items-center justify-between text-xs font-mono gap-2">
                       <span className="text-[#676767] uppercase truncate">{proj.category}</span>
                       <span className="px-2.5 py-0.5 bg-black text-white text-[10px] font-semibold rounded font-mono shrink-0">
                         {proj.status}
@@ -188,7 +188,7 @@ export default function Projects() {
                         href={proj.githubUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[#676767] hover:text-black"
+                        className="text-[#676767] hover:text-black p-1"
                         title="Lihat Repository GitHub"
                       >
                         <GithubIcon className="w-4 h-4" />
