@@ -16,15 +16,17 @@ function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
+import { getSeoMeta } from "../utils/seo";
+
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "Portofolio & Studi Kasus Proyek | RPL Digital Solutions" },
-    {
-      name: "description",
-      content:
-        "Portofolio proyek software house RPL Digital Solutions: Money Tracker, Sistem Web Enterprise, Aplikasi Android Native, IoT Telemetri, dan Penetration Testing.",
-    },
-  ];
+  return getSeoMeta({
+    title: "Portofolio & Studi Kasus Proyek | RPL Digital Solutions",
+    description:
+      "Portofolio proyek software house RPL Digital Solutions: Money Tracker, Sistem Web Enterprise, Aplikasi Android Native, IoT Telemetri, dan Penetration Testing.",
+    path: "/projects",
+    keywords:
+      "portofolio software house, hasil kerja rpl digital solutions, contoh website enterprise, aplikasi android native, sistem iot telemetri, portfolio IT lampung",
+  });
 }
 
 interface ProjectItem {

@@ -10,6 +10,8 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 
+import { getOrganizationSchema } from "./utils/seo";
+
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/logo-1.png", type: "image/png" },
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -25,6 +27,7 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const schema = getOrganizationSchema();
   return (
     <html lang="id" className="scroll-smooth">
       <head>
@@ -32,6 +35,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
       </head>
       <body className="bg-white text-black font-sans selection:bg-black selection:text-white antialiased min-h-screen relative flex flex-col">
         {children}

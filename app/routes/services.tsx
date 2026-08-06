@@ -21,15 +21,17 @@ import { Footer } from "../components/Footer";
 import { CommandMenu } from "../components/CommandMenu";
 import { openWhatsApp } from "../utils/whatsapp";
 
+import { getSeoMeta } from "../utils/seo";
+
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "Layanan & Harga | RPL Digital Solutions" },
-    {
-      name: "description",
-      content:
-        "Layanan software engineering RPL Digital Solutions: Web, Android, IoT, ML, Cloud, dan Penetration Testing. Harga mulai IDR 500.000 dengan 3 tier pilihan.",
-    },
-  ];
+  return getSeoMeta({
+    title: "Layanan & Harga Software Engineering | RPL Digital Solutions",
+    description:
+      "Layanan software engineering RPL Digital Solutions: Web, Android, IoT, ML, Cloud, dan Penetration Testing. Harga mulai IDR 500.000 dengan 3 tier pilihan.",
+    path: "/services",
+    keywords:
+      "layanan software house, jasa bikin website murah lampung, jasa buat aplikasi android, pembuat sistem iot, penetrasi testing murah, biaya pembuatan software bandar lampung",
+  });
 }
 
 const servicesList = [

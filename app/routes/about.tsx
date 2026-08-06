@@ -19,15 +19,17 @@ function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
+import { getSeoMeta } from "../utils/seo";
+
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "Tentang Kami & Tim Software Engineer | RPL Digital Solutions" },
-    {
-      name: "description",
-      content:
-        "Sejarah perusahaan, filosofi rekayasa perangkat lunak, serta profil tim software engineer RPL Digital Solutions di Bandar Lampung.",
-    },
-  ];
+  return getSeoMeta({
+    title: "Tentang Kami & Tim Software Engineer | RPL Digital Solutions",
+    description:
+      "Sejarah perusahaan, filosofi rekayasa perangkat lunak, serta profil tim software engineer RPL Digital Solutions di Bandar Lampung.",
+    path: "/about",
+    keywords:
+      "tentang rpl digital solutions, tim software engineer bandar lampung, konsultan it lampung, profil perusahaan software house",
+  });
 }
 
 export default function About() {

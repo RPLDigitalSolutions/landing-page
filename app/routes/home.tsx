@@ -19,15 +19,17 @@ import { Footer } from "../components/Footer";
 import { CommandMenu } from "../components/CommandMenu";
 import { openWhatsApp } from "../utils/whatsapp";
 
+import { getSeoMeta } from "../utils/seo";
+
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "RPL Digital Solutions | Software House & IT Consultant Bandar Lampung" },
-    {
-      name: "description",
-      content:
-        "Software House & IT Consultant terpercaya dari Bandar Lampung. Kami merancang arsitektur web modern, aplikasi Android native, sistem telemetri IoT, dan audit keamanan siber.",
-    },
-  ];
+  return getSeoMeta({
+    title: "RPL Digital Solutions | Software House & IT Consultant Bandar Lampung",
+    description:
+      "Software House & IT Consultant terpercaya dari Bandar Lampung. Kami merancang arsitektur web modern, aplikasi Android native, sistem telemetri IoT, dan audit keamanan siber.",
+    path: "/",
+    keywords:
+      "software house bandar lampung, it consultant lampung, jasa pembuatan website bandar lampung, aplikasi android native, sistem iot telemetri, penetration testing lampung, rekayasa perangkat lunak",
+  });
 }
 
 export default function Home() {
