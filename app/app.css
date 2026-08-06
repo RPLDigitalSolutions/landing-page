@@ -1,15 +1,67 @@
 @import "tailwindcss" source(".");
 
+:root {
+  --on-primary: #ffffff;
+  --ink: #000000;
+  --canvas: #ffffff;
+  --carbon: #000000;
+  --charcoal: #3b3b3b;
+  --slate: #4a4a4a;
+  --ash: #676767;
+  --mute: #8a8a8a;
+  --stone: #ababab;
+  --hairline: #d0d5db;
+  --hairline-soft: #e5e7eb;
+  --display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+}
+
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans: var(--body);
+  --font-display: var(--display);
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  background-color: var(--canvas);
+  color: var(--carbon);
+  font-family: var(--body);
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+.font-display {
+  font-family: var(--display);
+}
+
+.border-hairline {
+  border-color: var(--hairline);
+}
+
+.border-hairline-soft {
+  border-color: var(--hairline-soft);
+}
+
+.btn-tactile {
+  transition: transform 0.1s ease, background-color 0.15s ease;
+}
+.btn-tactile:active {
+  transform: scale(0.98);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--canvas);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--hairline);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--stone);
 }
