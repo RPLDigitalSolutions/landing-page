@@ -3,7 +3,7 @@ export const siteConfig = {
   description: "Fast, precise, and built for scale. Jasa pembuatan custom software (Web, Android, AI/ML, IoT) terpercaya mulai dari 500K IDR.",
   url: "https://rpldigitalsolutions.tech", // Ganti dengan URL domain asli Anda nantinya
   ogImage: "https://rpldigitalsolutions.tech/og-image.png", // Ganti dengan path URL gambar banner Anda
-  whatsappNumber: "6281234567890", // Ganti dengan nomor WhatsApp yang asli (format: 628...)
+  whatsappNumber: "62895610120719", // Ganti dengan nomor WhatsApp yang asli (format: 628...)
   whatsappMessage: "Halo RPL Digital Solutions, saya tertarik untuk mendiskusikan sebuah project."
 };
 
