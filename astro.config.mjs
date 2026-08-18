@@ -15,11 +15,7 @@ export default defineConfig({
 
   integrations: [react()],
   output: "server",
-  adapter: cloudflare(),
-  session: {
-    driver: "cloudflare-kv-binding",
-    options: {
-      binding: "landing_page_session"
-    }
-  }
+  adapter: cloudflare({
+    sessionKVBindingName: "landing_page_session"
+  }),
 });
