@@ -6,15 +6,20 @@ interface Props {
 	title?: string;
 	description?: string;
 	image?: string;
+	ogType?: 'website' | 'article';
+	twitterCard?: 'summary' | 'summary_large_image';
 }
 
 const { 
   title = siteConfig.name, 
   description = siteConfig.description,
-  image = siteConfig.ogImage
+  image = siteConfig.ogImage,
+  ogType = 'website',
+  twitterCard = 'summary_large_image'
 } = Astro.props;
 
 const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.name}`;
+const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 ---
 
 <!doctype html>
@@ -32,15 +37,15 @@ const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.n
 		<meta name="description" content={description} />
 
 		<!-- Open Graph / Facebook -->
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content={siteConfig.url} />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:title" content={fullTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={image} />
 
 		<!-- Twitter -->
-		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content={siteConfig.url} />
+		<meta property="twitter:card" content={twitterCard} />
+		<meta property="twitter:url" content={canonicalURL} />
 		<meta property="twitter:title" content={fullTitle} />
 		<meta property="twitter:description" content={description} />
 		<meta property="twitter:image" content={image} />

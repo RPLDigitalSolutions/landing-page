@@ -13,7 +13,7 @@ const allPosts = await db.query.articles.findMany({
 });
 ---
 
-<Layout title="Blog">
+<Layout title="Blog" description="Kumpulan artikel dan insight terbaru dari tim RPL Digital Solutions." ogType="website" twitterCard="summary">
   <div class="max-w-5xl mx-auto px-6 md:px-12">
     <Header />
     <main class="py-24 min-h-[70vh]">

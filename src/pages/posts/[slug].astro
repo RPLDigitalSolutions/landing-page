@@ -21,9 +21,17 @@ const post = await db.query.articles.findFirst({
 if (!post) {
   return Astro.redirect('/404');
 }
+
+const rawText = post.content.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+let plainTextDescription = rawText;
+if (rawText.length > 160) {
+  const truncated = rawText.substring(0, 160);
+  const lastSpace = truncated.lastIndexOf(' ');
+  plainTextDescription = (lastSpace > 0 ? truncated.substring(0, lastSpace) : truncated) + '...';
+}
 ---
 
-<Layout title={post.title}>
+<Layout title={post.title} description={plainTextDescription} ogType="article" twitterCard="summary_large_image">
   <div class="max-w-5xl mx-auto px-6 md:px-12">
     <Header />
     <main class="py-24 min-h-[70vh]">
