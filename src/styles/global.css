@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "JetBrains Mono", monospace;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@layer base {
+  html, body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: var(--font-mono);
+  }
+  
+  ::selection {
+    background-color: #ffffff;
+    color: #000000;
+  }
+}
