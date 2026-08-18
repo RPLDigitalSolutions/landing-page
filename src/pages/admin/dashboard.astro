@@ -1,10 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { createAuth } from '../../lib/auth';
 import { env } from "cloudflare:workers";
 
-const auth = createAuth(env as any);
-const session = await auth.api.getSession({ headers: Astro.request.headers });
+
+const userId = await Astro.session.get('userId');
+const session = userId ? { user: { id: userId, role: await Astro.session.get('role'), name: await Astro.session.get('name') } } : null;
 
 if (!session) {
   return Astro.redirect('/admin/login');
@@ -55,11 +55,11 @@ if (!session) {
 </Layout>
 
 <script>
-  import { authClient } from '../../lib/auth-client';
 
   const logoutBtn = document.getElementById('logout-btn');
   logoutBtn?.addEventListener('click', async () => {
-    await authClient.signOut();
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.href = '/admin/login';
     window.location.href = '/admin/login';
   });
 
@@ -111,3 +111,10 @@ if (!session) {
 
   loadArticles();
 </script>
+
+
+
+
+
+
+

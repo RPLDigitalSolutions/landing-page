@@ -1,33 +1,32 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { createAuth } from '../../lib/auth';
-import { env } from "cloudflare:workers";
+import { env } from 'cloudflare:workers';
 import { getDb } from '../../db';
-import { sessions, accounts } from '../../db/schema';
+import { users, sessions } from '../../db/schema';
 import { eq } from 'drizzle-orm';
 
-const auth = createAuth(env as any);
-const sessionResult = await auth.api.getSession({ headers: Astro.request.headers });
+const userId = await Astro.session.get('userId');
+const sessionId = await Astro.session.get('sessionId');
 
-if (!sessionResult) {
+if (!userId || !sessionId) {
   return Astro.redirect('/admin/login');
 }
 
-const { user, session: currentSession } = sessionResult;
-
 const db = getDb(env as any);
 
-// Fetch active sessions
+const userRow = await db.query.users.findFirst({
+  where: eq(users.id, userId)
+});
+
+if (!userRow) {
+  return Astro.redirect('/admin/login');
+}
+
+const user = userRow;
+
 const activeSessions = await db.query.sessions.findMany({
-  where: eq(sessions.userId, user.id)
+  where: eq(sessions.userId, userId)
 });
-
-// Fetch linked accounts
-const linkedAccounts = await db.query.accounts.findMany({
-  where: eq(accounts.userId, user.id)
-});
-
-const isGoogleLinked = linkedAccounts.some(acc => acc.providerId === 'google');
 ---
 
 <Layout title="Settings">
@@ -66,7 +65,7 @@ const isGoogleLinked = linkedAccounts.some(acc => acc.providerId === 'google');
         <!-- Profile Section -->
         <section class="border-t border-zinc-800 pt-10">
           <h3 class="text-2xl font-bold tracking-tight mb-8">Profile Settings</h3>
-          <form id="profile-form" class="space-y-8">
+          <form id="profile-form" class="space-y-8" data-userid={user.id}>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <label class="block text-sm font-medium text-zinc-400">Full Name</label>
@@ -125,33 +124,6 @@ const isGoogleLinked = linkedAccounts.some(acc => acc.providerId === 'google');
           </form>
         </section>
 
-        <!-- Connected Accounts -->
-        <section class="border-t border-zinc-800 pt-10">
-          <h3 class="text-2xl font-bold tracking-tight mb-8">Connected Accounts</h3>
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between py-6 border-b border-zinc-800 gap-4">
-            <div class="flex items-center space-x-6">
-              <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z" />
-              </svg>
-              <div>
-                <p class="font-medium text-white text-lg">Google</p>
-                <p class="text-sm text-zinc-500 mt-1">{isGoogleLinked ? 'Connected' : 'Not connected'}</p>
-              </div>
-            </div>
-            <div class="w-full sm:w-auto">
-              {isGoogleLinked ? (
-                <button id="unlink-google-btn" class="w-full sm:w-auto py-2 px-6 text-sm font-medium text-red-400 hover:text-red-300 transition-colors">
-                  Disconnect
-                </button>
-              ) : (
-                <button id="link-google-btn" class="w-full sm:w-auto py-2 px-6 text-sm font-medium text-white border border-zinc-700 hover:bg-zinc-800 transition-colors">
-                  Connect Google
-                </button>
-              )}
-            </div>
-          </div>
-        </section>
-
         <!-- Active Devices -->
         <section class="border-t border-zinc-800 pt-10">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
@@ -166,7 +138,7 @@ const isGoogleLinked = linkedAccounts.some(acc => acc.providerId === 'google');
                 <div>
                   <p class="text-white font-medium text-base flex items-center gap-3">
                     {s.userAgent?.includes('Mac') ? 'Mac' : s.userAgent?.includes('Win') ? 'Windows' : 'Device'}
-                    {s.id === currentSession.id && (
+                    {s.id === sessionId && (
                       <span class="inline-flex items-center rounded-full bg-white px-2 py-0.5 text-[10px] font-medium text-black">
                         Current
                       </span>
@@ -177,8 +149,8 @@ const isGoogleLinked = linkedAccounts.some(acc => acc.providerId === 'google');
                   </p>
                   <p class="text-zinc-600 text-xs mt-1">IP: {s.ipAddress || 'Unknown'}</p>
                 </div>
-                {s.id !== currentSession.id && (
-                  <button data-token={s.token} class="revoke-session-btn w-full sm:w-auto text-left sm:text-right text-sm font-medium text-zinc-500 hover:text-white transition-colors">
+                {s.id !== sessionId && (
+                  <button data-id={s.id} class="revoke-session-btn w-full sm:w-auto text-left sm:text-right text-sm font-medium text-zinc-500 hover:text-white transition-colors">
                     Log out
                   </button>
                 )}
@@ -193,11 +165,9 @@ const isGoogleLinked = linkedAccounts.some(acc => acc.providerId === 'google');
 </Layout>
 
 <script>
-  import { authClient } from '../../lib/auth-client';
-
   const logoutBtn = document.getElementById('logout-btn');
   logoutBtn?.addEventListener('click', async () => {
-    await authClient.signOut();
+    await fetch('/api/auth/logout', { method: 'POST' });
     window.location.href = '/admin/login';
   });
 
@@ -211,14 +181,21 @@ const isGoogleLinked = linkedAccounts.some(acc => acc.providerId === 'google');
 
     const name = (document.getElementById('name') as HTMLInputElement).value;
     const username = (document.getElementById('username') as HTMLInputElement).value;
+    const userId = profileForm.dataset.userid;
 
-    const { error } = await authClient.updateUser({
-      name,
-      username
-    });
-
-    if (error) alert(error.message);
-    else window.location.reload();
+    try {
+      const res = await fetch('/api/users/' + userId, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, username })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to update profile');
+      alert('Profile updated successfully');
+      window.location.reload();
+    } catch (err: any) {
+      alert(err.message);
+    }
     
     btn.textContent = 'Save Profile';
     btn.disabled = false;
@@ -235,62 +212,62 @@ const isGoogleLinked = linkedAccounts.some(acc => acc.providerId === 'google');
     const currentPassword = (document.getElementById('current-password') as HTMLInputElement).value;
     const newPassword = (document.getElementById('new-password') as HTMLInputElement).value;
 
-    const { error } = await authClient.changePassword({
-      currentPassword,
-      newPassword,
-      revokeOtherSessions: true
-    });
-
-    if (error) alert(error.message);
-    else {
+    try {
+      const res = await fetch('/api/auth/password', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword, newPassword })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to update password');
       alert('Password updated successfully!');
       (passwordForm as HTMLFormElement).reset();
+    } catch (err: any) {
+      alert(err.message);
     }
     
     btn.textContent = 'Update Password';
     btn.disabled = false;
   });
 
-  // Google Linking
-  const linkGoogleBtn = document.getElementById('link-google-btn');
-  linkGoogleBtn?.addEventListener('click', async () => {
-    const { error } = await authClient.linkSocial({
-      provider: 'google',
-      callbackURL: '/admin/settings'
-    });
-    if (error) alert(error.message);
-  });
-
-  const unlinkGoogleBtn = document.getElementById('unlink-google-btn');
-  unlinkGoogleBtn?.addEventListener('click', async () => {
-    if (!confirm('Are you sure you want to disconnect Google?')) return;
-    const { error } = await authClient.unlinkAccount({
-      providerId: 'google'
-    });
-    if (error) alert(error.message);
-    else window.location.reload();
-  });
-
   // Session Revocation
   document.querySelectorAll('.revoke-session-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
-      const token = (e.target as HTMLButtonElement).dataset.token;
-      if (!token) return;
+      const id = (e.target as HTMLButtonElement).dataset.id;
+      if (!id) return;
       
-      const { error } = await authClient.revokeSession({
-        token
-      });
-      
-      if (error) alert(error.message);
-      else window.location.reload();
+      try {
+        const res = await fetch('/api/auth/revoke', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: id })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to revoke session');
+        window.location.reload();
+      } catch (err: any) {
+        alert(err.message);
+      }
     });
   });
 
   const logoutOthersBtn = document.getElementById('logout-others-btn');
   logoutOthersBtn?.addEventListener('click', async () => {
     if (!confirm('Log out of all other devices?')) return;
-    const { error } = await authClient.revokeOtherSessions();
-    if (error) alert(error.message);
-    else window.location.reload();
+    
+    try {
+      const res = await fetch('/api/auth/revoke', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ allOthers: true })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to revoke sessions');
+      window.location.reload();
+    } catch (err: any) {
+      alert(err.message);
+    }
   });
 </script>
+
+

@@ -1,14 +1,14 @@
 import type { APIRoute } from "astro";
 import { getDb } from "../../../db";
 import { articles } from "../../../db/schema";
-import { createAuth } from "../../../lib/auth";
 import { eq } from "drizzle-orm";
 import { env } from "cloudflare:workers";
 
 export const PUT: APIRoute = async (ctx) => {
-  const auth = createAuth(env as any);
-  
-  const session = await auth.api.getSession({ headers: ctx.request.headers });
+  const userId = await ctx.session?.get('userId');
+  const role = await ctx.session?.get('role');
+  const session = userId ? { user: { id: userId, role: role } } : null;
+
   if (!session) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
@@ -31,9 +31,10 @@ export const PUT: APIRoute = async (ctx) => {
 };
 
 export const DELETE: APIRoute = async (ctx) => {
-  const auth = createAuth(env as any);
-  
-  const session = await auth.api.getSession({ headers: ctx.request.headers });
+  const userId = await ctx.session?.get('userId');
+  const role = await ctx.session?.get('role');
+  const session = userId ? { user: { id: userId, role: role } } : null;
+
   if (!session) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }

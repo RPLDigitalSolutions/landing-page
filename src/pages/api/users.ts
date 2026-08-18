@@ -1,12 +1,16 @@
 import type { APIRoute } from 'astro';
-import { createAuth } from '../../lib/auth';
+import { drizzle } from 'drizzle-orm/d1';
+import { env } from 'cloudflare:workers';
+import * as schema from '../../db/schema';
+import bcrypt from 'bcryptjs';
 
-export const POST: APIRoute = async ({ request, env }) => {
-  const auth = createAuth(env as any);
+export const POST: APIRoute = async (context) => {
+  const { request, locals } = context;
+  
   
   // Verify admin session
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session) {
+  const sessionUser = await context.session?.get('role');
+  if (sessionUser !== 'admin') {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
   }
 
@@ -18,24 +22,24 @@ export const POST: APIRoute = async ({ request, env }) => {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
     }
 
-    // Call Better Auth internally
-    // We generate a dummy email because Better Auth requires it for the core module.
-    const email = `${username}@local.app`;
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const db = drizzle(env.DB, { schema });
 
-    const result = await auth.api.signUpEmail({
-      body: {
-        email,
-        password,
-        name,
-        username,
-      },
-      asResponse: false
-    });
+    const newUser = await db.insert(schema.users).values({
+      id: crypto.randomUUID(),
+      name,
+      username,
+      password: hashedPassword,
+      role: 'user'
+    }).returning();
 
-    // Return the created user (the API won't pipe the session cookie because we manually respond)
-    return new Response(JSON.stringify({ user: result.user }), { status: 200 });
+    return new Response(JSON.stringify({ user: newUser[0] }), { status: 200 });
   } catch (error: any) {
     console.error('Error creating user:', error);
     return new Response(JSON.stringify({ error: error.message || 'Failed to create user' }), { status: 500 });
   }
 };
+
+
+
+
