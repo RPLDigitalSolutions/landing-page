@@ -1,0 +1,113 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { createAuth } from '../../lib/auth';
+import { env } from "cloudflare:workers";
+
+const auth = createAuth(env as any);
+const session = await auth.api.getSession({ headers: Astro.request.headers });
+
+if (!session) {
+  return Astro.redirect('/admin/login');
+}
+---
+
+<Layout title="CMS Dashboard">
+  <div class="min-h-screen bg-black text-white">
+    <nav class="border-b border-zinc-800">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row justify-between sm:h-20 items-center py-4 sm:py-0 gap-4">
+          <div class="flex items-center w-full sm:w-auto justify-between">
+            <h1 class="text-xl font-bold tracking-tight">CMS Dashboard</h1>
+          </div>
+          <div class="flex items-center gap-4 sm:gap-6 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0">
+            <a href="/admin/dashboard" class="text-sm text-white font-medium whitespace-nowrap">Articles</a>
+            <a href="/admin/users" class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap">Users</a>
+            <a href="/admin/settings" class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap">Settings</a>
+            <button
+              id="logout-btn"
+              class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap"
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 sm:mb-12 gap-4">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Articles</h2>
+        <a
+          href="/admin/editor"
+          class="inline-flex items-center justify-center px-5 py-2.5 border border-zinc-700 text-sm font-medium text-black bg-white hover:bg-zinc-200 focus:outline-none transition-colors"
+        >
+          Create New Article
+        </a>
+      </div>
+
+      <div class="border-t border-zinc-800">
+        <ul id="articles-list" class="divide-y divide-zinc-800">
+          <li class="py-12 text-zinc-500 text-center">Loading articles...</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+</Layout>
+
+<script>
+  import { authClient } from '../../lib/auth-client';
+
+  const logoutBtn = document.getElementById('logout-btn');
+  logoutBtn?.addEventListener('click', async () => {
+    await authClient.signOut();
+    window.location.href = '/admin/login';
+  });
+
+  // Fetch articles
+  async function loadArticles() {
+    try {
+      const res = await fetch('/api/articles');
+      const articles = await res.json();
+      const list = document.getElementById('articles-list');
+      if (!list) return;
+
+      if (articles.length === 0) {
+        list.innerHTML = '<li class="py-12 text-zinc-500 text-center">No articles found. Create one!</li>';
+        return;
+      }
+
+      list.innerHTML = articles.map((article: any) => `
+        <li class="group hover:bg-zinc-900/50 transition-colors -mx-4 px-4 sm:-mx-6 sm:px-6 rounded-xl">
+          <div class="py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="min-w-0 flex-1">
+              <div>
+                <p class="text-lg font-medium text-white whitespace-normal break-words leading-snug">${article.title}</p>
+                <p class="mt-2 flex items-center text-sm text-zinc-500">
+                  ${new Date(article.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                </p>
+              </div>
+            </div>
+            <div class="flex-shrink-0 flex gap-4">
+              <a href="/admin/editor?id=${article.id}" class="text-white hover:text-zinc-300 transition-colors border-b border-transparent hover:border-zinc-300 pb-1">Edit</a>
+              <button onclick="deleteArticle('${article.id}')" class="text-red-500 hover:text-red-400 transition-colors border-b border-transparent hover:border-red-400 pb-1">Delete</button>
+            </div>
+          </div>
+        </li>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  (window as any).deleteArticle = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this article?')) return;
+    try {
+      await fetch(`/api/articles/${id}`, { method: 'DELETE' });
+      loadArticles();
+    } catch (e) {
+      alert('Error deleting article');
+    }
+  };
+
+  loadArticles();
+</script>

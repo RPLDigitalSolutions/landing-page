@@ -1,0 +1,133 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import TipTapEditor from '../../components/cms/TipTapEditor.tsx';
+import { createAuth } from '../../lib/auth';
+import { env } from "cloudflare:workers";
+import { getDb } from '../../db';
+import { articles } from '../../db/schema';
+import { eq } from 'drizzle-orm';
+
+const auth = createAuth(env as any);
+const session = await auth.api.getSession({ headers: Astro.request.headers });
+
+if (!session) {
+  return Astro.redirect('/admin/login');
+}
+
+const id = Astro.url.searchParams.get('id');
+let article = { title: '', content: '' };
+
+if (id) {
+  const db = getDb(env as any);
+  const found = await db.query.articles.findFirst({
+    where: eq(articles.id, id)
+  });
+  if (found) {
+    article = { title: found.title, content: found.content };
+  }
+}
+---
+
+<Layout title={id ? "Edit Article" : "Create Article"}>
+  <div class="min-h-screen bg-black py-12 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-12 flex justify-between items-center">
+        <h2 id="editor-title" class="text-3xl font-bold tracking-tight">{id ? "Edit Article" : "Create Article"}</h2>
+        <a href="/admin/dashboard" class="text-sm text-zinc-500 hover:text-white transition-colors">Back to Dashboard</a>
+      </div>
+
+      <form id="article-form" class="space-y-8" data-id={id || ''}>
+        <div>
+          <label for="title" class="block text-sm font-medium text-zinc-400">Title</label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            required
+            value={article.title}
+            class="mt-2 block w-full bg-transparent border-0 border-b border-zinc-700 text-white shadow-none py-3 px-0 focus:outline-none focus:border-white focus:ring-0 sm:text-2xl font-medium transition-colors placeholder-zinc-700"
+            placeholder="Article Title"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-zinc-400 mb-4">Content</label>
+          <div id="editor-container">
+            <TipTapEditor client:only="react" content={article.content} />
+          </div>
+          <!-- Hidden input to store editor content -->
+          <input type="hidden" name="content" id="article-content" value={article.content} />
+        </div>
+
+        <div class="flex justify-end pt-8">
+          <button
+            type="submit"
+            id="save-btn"
+            class="inline-flex justify-center py-3 px-8 border border-zinc-700 text-sm font-medium text-black bg-white hover:bg-zinc-200 focus:outline-none transition-colors"
+          >
+            Save Article
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  .tiptap p.is-editor-empty:first-child::before {
+    color: #52525b; /* zinc-600 */
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  const form = document.getElementById('article-form') as HTMLFormElement;
+  const titleInput = document.getElementById('title') as HTMLInputElement;
+  const contentInput = document.getElementById('article-content') as HTMLInputElement;
+
+  // Listen for content updates from the editor
+  window.addEventListener('message', (event) => {
+    if (event.data.type === 'editor-change') {
+      contentInput.value = event.data.content;
+    }
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = titleInput.value;
+    const content = contentInput.value;
+    const articleId = form.dataset.id;
+
+    if (!content || content === '<p></p>') {
+      alert('Content cannot be empty');
+      return;
+    }
+
+    const saveBtn = document.getElementById('save-btn') as HTMLButtonElement;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    try {
+      const method = articleId ? 'PUT' : 'POST';
+      const url = articleId ? `/api/articles/${articleId}` : '/api/articles';
+      
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, content })
+      });
+      
+      if (!res.ok) throw new Error('Failed to save');
+      
+      window.location.href = '/admin/dashboard';
+    } catch (err) {
+      alert('Error saving article');
+      console.error(err);
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Article';
+    }
+  });
+</script>

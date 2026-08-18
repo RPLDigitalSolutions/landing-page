@@ -1,0 +1,43 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import { getDb } from '../../db';
+import { articles } from '../../db/schema';
+import { desc } from 'drizzle-orm';
+import { env } from 'cloudflare:workers';
+
+const db = getDb(env as any);
+const allPosts = await db.query.articles.findMany({
+  orderBy: [desc(articles.createdAt)]
+});
+---
+
+<Layout title="Blog">
+  <div class="max-w-5xl mx-auto px-6 md:px-12">
+    <Header />
+    <main class="py-24 min-h-[70vh]">
+      <h1 class="text-4xl font-bold mb-12">Blog.</h1>
+      
+      <div class="flex flex-col gap-8 mb-16">
+        {allPosts.length === 0 ? (
+          <p class="text-zinc-500">No articles found.</p>
+        ) : (
+          allPosts.map((post) => (
+            <a href={`/posts/${post.id}`} class="group flex flex-col md:flex-row md:items-center justify-between border-b border-zinc-800 pb-8 hover:border-zinc-500 transition-colors">
+              <h2 class="text-2xl font-medium text-zinc-300 group-hover:text-white transition-colors">{post.title}</h2>
+              <time class="text-zinc-500 mt-2 md:mt-0 font-mono text-sm">
+                {new Date(post.createdAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+            </a>
+          ))
+        )}
+      </div>
+    </main>
+    <Footer />
+  </div>
+</Layout>

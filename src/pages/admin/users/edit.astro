@@ -1,0 +1,180 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { createAuth } from '../../../lib/auth';
+import { env } from "cloudflare:workers";
+import { getDb } from '../../../db';
+import { users } from '../../../db/schema';
+import { eq } from 'drizzle-orm';
+
+const auth = createAuth(env as any);
+const session = await auth.api.getSession({ headers: Astro.request.headers });
+
+if (!session) {
+  return Astro.redirect('/admin/login');
+}
+
+const id = Astro.url.searchParams.get('id');
+let editingUser = { name: '', username: '' };
+
+if (id) {
+  const db = getDb(env as any);
+  const found = await db.query.users.findFirst({
+    where: eq(users.id, id)
+  });
+  if (found) {
+    editingUser = { name: found.name, username: found.username || '' };
+  }
+}
+---
+
+<Layout title={id ? "Edit User" : "Create User"}>
+  <div class="min-h-screen bg-black text-white">
+    <nav class="border-b border-zinc-800">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row justify-between sm:h-20 items-center py-4 sm:py-0 gap-4">
+          <div class="flex items-center w-full sm:w-auto justify-between">
+            <a href="/admin/dashboard" class="text-xl font-bold tracking-tight text-white hover:text-zinc-300 transition-colors">CMS Dashboard</a>
+          </div>
+          <div class="flex items-center gap-4 sm:gap-6 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0">
+            <a href="/admin/dashboard" class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap">Articles</a>
+            <a href="/admin/users" class="text-sm text-white font-medium whitespace-nowrap">Users</a>
+            <a href="/admin/settings" class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap">Settings</a>
+            <button
+              id="logout-btn"
+              class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap"
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div class="mb-8 sm:mb-12 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">{id ? "Edit User" : "Create New User"}</h2>
+          <p class="text-zinc-500 mt-1">{id ? "Update user details" : "Add a new user to the system"}</p>
+        </div>
+        <a href="/admin/users" class="text-sm text-zinc-400 hover:text-white transition-colors">Back to Users</a>
+      </div>
+
+      <div class="mt-8">
+        <form id="user-form" class="space-y-10" data-id={id || ''}>
+          <div>
+            <label for="name" class="block text-sm font-medium text-zinc-400">Full Name</label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              required
+              value={editingUser.name}
+              class="mt-2 block w-full bg-transparent border-0 border-b border-zinc-800 text-white shadow-none py-4 px-0 focus:outline-none focus:border-white focus:ring-0 sm:text-2xl font-medium transition-colors placeholder-zinc-800"
+              placeholder="John Doe"
+            />
+          </div>
+          
+          <div>
+            <label for="username" class="block text-sm font-medium text-zinc-400">Username</label>
+            <input
+              type="text"
+              name="username"
+              id="username"
+              required
+              value={editingUser.username}
+              class="mt-2 block w-full bg-transparent border-0 border-b border-zinc-800 text-white shadow-none py-4 px-0 focus:outline-none focus:border-white focus:ring-0 sm:text-2xl font-medium transition-colors placeholder-zinc-800"
+              placeholder="johndoe"
+            />
+          </div>
+
+          {!id && (
+            <div>
+              <label for="password" class="block text-sm font-medium text-zinc-400">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                required
+                class="mt-2 block w-full bg-transparent border-0 border-b border-zinc-800 text-white shadow-none py-4 px-0 focus:outline-none focus:border-white focus:ring-0 sm:text-2xl font-medium transition-colors placeholder-zinc-800"
+                placeholder="••••••••"
+              />
+            </div>
+          )}
+          
+          {id && (
+            <p class="text-sm text-zinc-500 italic py-4 border-b border-zinc-800">
+              Note: For security reasons, passwords can only be changed by the user themselves in their Settings panel.
+            </p>
+          )}
+
+          <div class="pt-6 flex justify-end">
+            <button
+              type="submit"
+              id="save-btn"
+              class="inline-flex justify-center py-4 px-10 text-base font-medium text-black bg-white hover:bg-zinc-200 focus:outline-none transition-colors"
+            >
+              {id ? "Save Changes" : "Create User"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</Layout>
+
+<script>
+  import { authClient } from '../../../lib/auth-client';
+
+  const logoutBtn = document.getElementById('logout-btn');
+  logoutBtn?.addEventListener('click', async () => {
+    await authClient.signOut();
+    window.location.href = '/admin/login';
+  });
+
+  const form = document.getElementById('user-form') as HTMLFormElement;
+  const nameInput = document.getElementById('name') as HTMLInputElement;
+  const usernameInput = document.getElementById('username') as HTMLInputElement;
+  const passwordInput = document.getElementById('password') as HTMLInputElement;
+  const saveBtn = document.getElementById('save-btn') as HTMLButtonElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userId = form.dataset.id;
+    
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    try {
+      const method = userId ? 'PUT' : 'POST';
+      const url = userId ? `/api/users/${userId}` : '/api/users';
+
+      const body: any = {
+        name: nameInput.value,
+        username: usernameInput.value,
+      };
+
+      if (passwordInput && passwordInput.value) {
+        body.password = passwordInput.value;
+      }
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to save user');
+      }
+
+      window.location.href = '/admin/users';
+    } catch (err: any) {
+      alert(err.message || 'An error occurred');
+      saveBtn.disabled = false;
+      saveBtn.textContent = userId ? 'Save Changes' : 'Create User';
+    }
+  });
+</script>

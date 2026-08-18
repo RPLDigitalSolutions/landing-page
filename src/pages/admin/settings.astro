@@ -1,0 +1,296 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { createAuth } from '../../lib/auth';
+import { env } from "cloudflare:workers";
+import { getDb } from '../../db';
+import { sessions, accounts } from '../../db/schema';
+import { eq } from 'drizzle-orm';
+
+const auth = createAuth(env as any);
+const sessionResult = await auth.api.getSession({ headers: Astro.request.headers });
+
+if (!sessionResult) {
+  return Astro.redirect('/admin/login');
+}
+
+const { user, session: currentSession } = sessionResult;
+
+const db = getDb(env as any);
+
+// Fetch active sessions
+const activeSessions = await db.query.sessions.findMany({
+  where: eq(sessions.userId, user.id)
+});
+
+// Fetch linked accounts
+const linkedAccounts = await db.query.accounts.findMany({
+  where: eq(accounts.userId, user.id)
+});
+
+const isGoogleLinked = linkedAccounts.some(acc => acc.providerId === 'google');
+---
+
+<Layout title="Settings">
+  <div class="min-h-screen bg-black text-white">
+    <nav class="border-b border-zinc-800">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row justify-between sm:h-20 items-center py-4 sm:py-0 gap-4">
+          <div class="flex items-center w-full sm:w-auto justify-between">
+            <a href="/admin/dashboard" class="text-xl font-bold tracking-tight text-white hover:text-zinc-300 transition-colors">CMS Dashboard</a>
+          </div>
+          <div class="flex items-center gap-4 sm:gap-6 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0">
+            <a href="/admin/dashboard" class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap">Articles</a>
+            <a href="/admin/users" class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap">Users</a>
+            <a href="/admin/settings" class="text-sm text-white font-medium whitespace-nowrap">Settings</a>
+            <button
+              id="logout-btn"
+              class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap"
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div class="mb-8 sm:mb-12 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Settings</h2>
+          <p class="text-zinc-500 mt-1">Manage your account preferences</p>
+        </div>
+      </div>
+
+      <div class="space-y-16">
+        
+        <!-- Profile Section -->
+        <section class="border-t border-zinc-800 pt-10">
+          <h3 class="text-2xl font-bold tracking-tight mb-8">Profile Settings</h3>
+          <form id="profile-form" class="space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <label class="block text-sm font-medium text-zinc-400">Full Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  value={user.name}
+                  class="mt-2 block w-full bg-transparent border-0 border-b border-zinc-800 text-white shadow-none py-4 px-0 focus:outline-none focus:border-white focus:ring-0 sm:text-xl font-medium transition-colors"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-zinc-400">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  value={user.username || ''}
+                  class="mt-2 block w-full bg-transparent border-0 border-b border-zinc-800 text-white shadow-none py-4 px-0 focus:outline-none focus:border-white focus:ring-0 sm:text-xl font-medium transition-colors"
+                />
+              </div>
+            </div>
+            <div class="flex justify-end pt-4">
+              <button type="submit" id="save-profile-btn" class="py-3 px-8 text-sm font-medium text-black bg-white hover:bg-zinc-200 transition-colors">
+                Save Profile
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Security Section -->
+        <section class="border-t border-zinc-800 pt-10">
+          <h3 class="text-2xl font-bold tracking-tight mb-8">Security</h3>
+          <form id="password-form" class="space-y-8">
+            <div>
+              <label class="block text-sm font-medium text-zinc-400">Current Password</label>
+              <input
+                type="password"
+                id="current-password"
+                required
+                class="mt-2 block w-full md:w-1/2 bg-transparent border-0 border-b border-zinc-800 text-white shadow-none py-4 px-0 focus:outline-none focus:border-white focus:ring-0 sm:text-xl font-medium transition-colors"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-zinc-400">New Password</label>
+              <input
+                type="password"
+                id="new-password"
+                required
+                class="mt-2 block w-full md:w-1/2 bg-transparent border-0 border-b border-zinc-800 text-white shadow-none py-4 px-0 focus:outline-none focus:border-white focus:ring-0 sm:text-xl font-medium transition-colors"
+              />
+            </div>
+            <div class="flex justify-start pt-4">
+              <button type="submit" id="change-password-btn" class="py-3 px-8 text-sm font-medium text-white border border-zinc-700 hover:bg-zinc-800 transition-colors">
+                Update Password
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Connected Accounts -->
+        <section class="border-t border-zinc-800 pt-10">
+          <h3 class="text-2xl font-bold tracking-tight mb-8">Connected Accounts</h3>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between py-6 border-b border-zinc-800 gap-4">
+            <div class="flex items-center space-x-6">
+              <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z" />
+              </svg>
+              <div>
+                <p class="font-medium text-white text-lg">Google</p>
+                <p class="text-sm text-zinc-500 mt-1">{isGoogleLinked ? 'Connected' : 'Not connected'}</p>
+              </div>
+            </div>
+            <div class="w-full sm:w-auto">
+              {isGoogleLinked ? (
+                <button id="unlink-google-btn" class="w-full sm:w-auto py-2 px-6 text-sm font-medium text-red-400 hover:text-red-300 transition-colors">
+                  Disconnect
+                </button>
+              ) : (
+                <button id="link-google-btn" class="w-full sm:w-auto py-2 px-6 text-sm font-medium text-white border border-zinc-700 hover:bg-zinc-800 transition-colors">
+                  Connect Google
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <!-- Active Devices -->
+        <section class="border-t border-zinc-800 pt-10">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+            <h3 class="text-2xl font-bold tracking-tight">Active Devices</h3>
+            <button id="logout-others-btn" class="w-full sm:w-auto text-left sm:text-right text-sm font-medium text-red-400 hover:text-red-300 transition-colors">
+              Log out of all other devices
+            </button>
+          </div>
+          <ul class="divide-y divide-zinc-800 border-y border-zinc-800">
+            {activeSessions.map((s) => (
+              <li class="py-6 flex flex-col sm:flex-row sm:items-center justify-between group gap-4">
+                <div>
+                  <p class="text-white font-medium text-base flex items-center gap-3">
+                    {s.userAgent?.includes('Mac') ? 'Mac' : s.userAgent?.includes('Win') ? 'Windows' : 'Device'}
+                    {s.id === currentSession.id && (
+                      <span class="inline-flex items-center rounded-full bg-white px-2 py-0.5 text-[10px] font-medium text-black">
+                        Current
+                      </span>
+                    )}
+                  </p>
+                  <p class="text-zinc-500 text-sm mt-2 max-w-sm truncate" title={s.userAgent || 'Unknown browser'}>
+                    {s.userAgent || 'Unknown browser'}
+                  </p>
+                  <p class="text-zinc-600 text-xs mt-1">IP: {s.ipAddress || 'Unknown'}</p>
+                </div>
+                {s.id !== currentSession.id && (
+                  <button data-token={s.token} class="revoke-session-btn w-full sm:w-auto text-left sm:text-right text-sm font-medium text-zinc-500 hover:text-white transition-colors">
+                    Log out
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+        
+      </div>
+    </main>
+  </div>
+</Layout>
+
+<script>
+  import { authClient } from '../../lib/auth-client';
+
+  const logoutBtn = document.getElementById('logout-btn');
+  logoutBtn?.addEventListener('click', async () => {
+    await authClient.signOut();
+    window.location.href = '/admin/login';
+  });
+
+  // Profile Update
+  const profileForm = document.getElementById('profile-form');
+  profileForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('save-profile-btn') as HTMLButtonElement;
+    btn.textContent = 'Saving...';
+    btn.disabled = true;
+
+    const name = (document.getElementById('name') as HTMLInputElement).value;
+    const username = (document.getElementById('username') as HTMLInputElement).value;
+
+    const { error } = await authClient.updateUser({
+      name,
+      username
+    });
+
+    if (error) alert(error.message);
+    else window.location.reload();
+    
+    btn.textContent = 'Save Profile';
+    btn.disabled = false;
+  });
+
+  // Password Update
+  const passwordForm = document.getElementById('password-form');
+  passwordForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('change-password-btn') as HTMLButtonElement;
+    btn.textContent = 'Updating...';
+    btn.disabled = true;
+
+    const currentPassword = (document.getElementById('current-password') as HTMLInputElement).value;
+    const newPassword = (document.getElementById('new-password') as HTMLInputElement).value;
+
+    const { error } = await authClient.changePassword({
+      currentPassword,
+      newPassword,
+      revokeOtherSessions: true
+    });
+
+    if (error) alert(error.message);
+    else {
+      alert('Password updated successfully!');
+      (passwordForm as HTMLFormElement).reset();
+    }
+    
+    btn.textContent = 'Update Password';
+    btn.disabled = false;
+  });
+
+  // Google Linking
+  const linkGoogleBtn = document.getElementById('link-google-btn');
+  linkGoogleBtn?.addEventListener('click', async () => {
+    const { error } = await authClient.linkSocial({
+      provider: 'google',
+      callbackURL: '/admin/settings'
+    });
+    if (error) alert(error.message);
+  });
+
+  const unlinkGoogleBtn = document.getElementById('unlink-google-btn');
+  unlinkGoogleBtn?.addEventListener('click', async () => {
+    if (!confirm('Are you sure you want to disconnect Google?')) return;
+    const { error } = await authClient.unlinkAccount({
+      providerId: 'google'
+    });
+    if (error) alert(error.message);
+    else window.location.reload();
+  });
+
+  // Session Revocation
+  document.querySelectorAll('.revoke-session-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const token = (e.target as HTMLButtonElement).dataset.token;
+      if (!token) return;
+      
+      const { error } = await authClient.revokeSession({
+        token
+      });
+      
+      if (error) alert(error.message);
+      else window.location.reload();
+    });
+  });
+
+  const logoutOthersBtn = document.getElementById('logout-others-btn');
+  logoutOthersBtn?.addEventListener('click', async () => {
+    if (!confirm('Log out of all other devices?')) return;
+    const { error } = await authClient.revokeOtherSessions();
+    if (error) alert(error.message);
+    else window.location.reload();
+  });
+</script>

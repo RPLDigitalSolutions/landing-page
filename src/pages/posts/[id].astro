@@ -1,28 +1,36 @@
 ---
-import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import { getDb } from '../../db';
+import { articles } from '../../db/schema';
+import { eq } from 'drizzle-orm';
+import { env } from 'cloudflare:workers';
 
-export async function getStaticPaths() {
-  const blogEntries = await getCollection('blog');
-  return blogEntries.map(entry => ({
-    params: { slug: entry.id }, props: { entry },
-  }));
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/blog');
 }
 
-const { entry } = Astro.props;
-const { Content } = await render(entry);
+const db = getDb(env as any);
+const post = await db.query.articles.findFirst({
+  where: eq(articles.id, id)
+});
+
+if (!post) {
+  return Astro.redirect('/404');
+}
 ---
 
-<Layout title={entry.data.title}>
+<Layout title={post.title}>
   <div class="max-w-5xl mx-auto px-6 md:px-12">
     <Header />
     <main class="py-24 min-h-[70vh]">
       <div class="mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">{entry.data.title}</h1>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">{post.title}</h1>
         <time class="text-zinc-500 font-mono">
-          {entry.data.pubDate.toLocaleDateString('en-US', {
+          {new Date(post.createdAt).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
@@ -30,8 +38,7 @@ const { Content } = await render(entry);
         </time>
       </div>
       
-      <article class="prose prose-invert prose-zinc max-w-none text-zinc-300 font-sans">
-        <Content />
+      <article class="prose prose-invert prose-zinc max-w-none text-zinc-300 font-sans" set:html={post.content}>
       </article>
       
       <div class="mt-16 pt-8 border-t border-zinc-800">
