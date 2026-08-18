@@ -21,6 +21,7 @@ export const sessions = sqliteTable('session', {
 
 export const articles = sqliteTable('article', {
   id: text('id').primaryKey(),
+  slug: text('slug').notNull().unique(),
   title: text('title').notNull(),
   content: text('content').notNull(),
   authorId: text('author_id').notNull().references(() => users.id),

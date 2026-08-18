@@ -40,8 +40,12 @@ export const POST: APIRoute = async (ctx) => {
 
   try {
     const id = crypto.randomUUID();
+    const baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const slug = `${baseSlug}-${id.substring(0, 6)}`;
+    
     await db.insert(articles).values({
       id,
+      slug,
       title,
       content,
       authorId: session.user.id,

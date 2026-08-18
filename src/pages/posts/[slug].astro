@@ -7,15 +7,15 @@ import { articles } from '../../db/schema';
 import { eq } from 'drizzle-orm';
 import { env } from 'cloudflare:workers';
 
-const { id } = Astro.params;
+const { slug } = Astro.params;
 
-if (!id) {
+if (!slug) {
   return Astro.redirect('/blog');
 }
 
 const db = getDb(env as any);
 const post = await db.query.articles.findFirst({
-  where: eq(articles.id, id)
+  where: eq(articles.slug, slug)
 });
 
 if (!post) {
