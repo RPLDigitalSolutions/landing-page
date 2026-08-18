@@ -10,7 +10,7 @@ import FAQ from '../components/FAQ';
 import Footer from '../components/Footer';
 ---
 
-<Layout title="RPL Digital Solutions.">
+<Layout title="Home">
 	<div class="max-w-5xl mx-auto px-6 md:px-12">
 		<Header />
 		<main>
@@ -56,16 +56,18 @@ import Footer from '../components/Footer';
 
     toggleBtn?.addEventListener('click', toggleMenu);
 
-    // Smooth scroll for all nav buttons
-    const scrollButtons = document.querySelectorAll('button[data-scroll-to]');
-    scrollButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = btn.getAttribute('data-scroll-to');
-        if (targetId) {
+    // Smooth scroll for hash links
+    const scrollLinks = document.querySelectorAll('a[href^="/#"]');
+    scrollLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (href) {
+          const targetId = href.replace('/#', '');
           const el = document.getElementById(targetId);
           if (el) {
+            e.preventDefault();
             el.scrollIntoView({ behavior: 'smooth' });
+            window.history.pushState(null, '', '#' + targetId);
           }
         }
         // Auto close mobile menu after clicking a link

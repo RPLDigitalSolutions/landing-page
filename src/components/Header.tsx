@@ -1,30 +1,30 @@
 import { getWhatsAppLink, siteConfig } from '../config';
 
 const navItems = [
-  { label: 'Capabilities', id: 'capabilities' },
-  { label: 'Terms', id: 'terms' },
-  { label: 'Work', id: 'work' },
-  { label: 'Engineers', id: 'team' },
-  { label: 'FAQ', id: 'faq' },
+  { label: 'Capabilities', href: '/#capabilities' },
+  { label: 'Terms', href: '/#terms' },
+  { label: 'Work', href: '/#work' },
+  { label: 'Engineers', href: '/#team' },
+  { label: 'FAQ', href: '/#faq' },
+  { label: 'Blog', href: '/blog' },
 ];
 
 export default function Header() {
   return (
     <>
       <header className="py-8 md:py-12 text-sm font-medium tracking-tight flex justify-between items-center relative z-50">
-        <div className="text-white">{siteConfig.name}.</div>
+        <a href="/" className="text-white hover:text-zinc-300 transition-colors">{siteConfig.name}.</a>
         
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-8">
           {navItems.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              data-scroll-to={item.id}
+            <a
+              key={item.label}
+              href={item.href}
               className="text-zinc-500 hover:text-white transition-colors cursor-pointer"
             >
               {item.label}
-            </button>
+            </a>
           ))}
         </nav>
 
@@ -50,14 +50,13 @@ export default function Header() {
         className="fixed inset-0 z-40 bg-black flex flex-col justify-center items-center gap-10 md:hidden h-[100dvh] transition-all duration-300 opacity-0 pointer-events-none"
       >
         {navItems.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            data-scroll-to={item.id}
+          <a
+            key={item.label}
+            href={item.href}
             className="text-3xl text-zinc-500 hover:text-white transition-colors cursor-pointer"
           >
             {item.label}
-          </button>
+          </a>
         ))}
         <a 
           href={getWhatsAppLink()} 
