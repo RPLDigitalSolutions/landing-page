@@ -1,7 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
-const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+const runtimeEnv = Astro.locals.runtime?.env || {};
+const siteKey = runtimeEnv.PUBLIC_TURNSTILE_SITE_KEY || import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 
 <Layout title="Login to CMS">
