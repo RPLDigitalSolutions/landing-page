@@ -20,7 +20,7 @@ export const PUT: APIRoute = async (context) => {
   }
 
   try {
-    const body = await request.json();
+    const body = await request.json() as any;
     const { name, username } = body;
 
     if (!name || !username) {

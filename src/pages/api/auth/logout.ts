@@ -6,14 +6,18 @@ import * as schema from '../../../db/schema';
 
 export const POST: APIRoute = async (context) => {
   const { session } = context;
+  if (!session) {
+    return new Response(JSON.stringify({ error: "Session is not configured" }), { status: 500 });
+  }
+
   const sessionId = await session.get('sessionId');
 
   if (sessionId) {
     const db = drizzle((env as any).DB, { schema });
-    await db.delete(schema.sessions).where(eq(schema.sessions.id, sessionId));
+    await db.delete(schema.sessions).where(eq(schema.sessions.id, sessionId as string));
   }
 
-  await session.destroy();
+  session.destroy();
   
   return new Response(JSON.stringify({ success: true }));
 };

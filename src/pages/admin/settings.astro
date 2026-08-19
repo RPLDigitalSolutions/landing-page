@@ -5,8 +5,8 @@ import { getDb } from '../../db';
 import { users, sessions } from '../../db/schema';
 import { eq } from 'drizzle-orm';
 
-const userId = await Astro.session.get('userId');
-const sessionId = await Astro.session.get('sessionId');
+const userId = await Astro.session?.get('userId');
+const sessionId = await Astro.session?.get('sessionId');
 
 if (!userId || !sessionId) {
   return Astro.redirect('/admin/login');
@@ -189,7 +189,7 @@ const activeSessions = await db.query.sessions.findMany({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, username })
       });
-      const data = await res.json();
+      const data = await res.json() as any;
       if (!res.ok) throw new Error(data.error || 'Failed to update profile');
       alert('Profile updated successfully');
       window.location.reload();
@@ -218,7 +218,7 @@ const activeSessions = await db.query.sessions.findMany({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ currentPassword, newPassword })
       });
-      const data = await res.json();
+      const data = await res.json() as any;
       if (!res.ok) throw new Error(data.error || 'Failed to update password');
       alert('Password updated successfully!');
       (passwordForm as HTMLFormElement).reset();
@@ -242,7 +242,7 @@ const activeSessions = await db.query.sessions.findMany({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ sessionId: id })
         });
-        const data = await res.json();
+        const data = await res.json() as any;
         if (!res.ok) throw new Error(data.error || 'Failed to revoke session');
         window.location.reload();
       } catch (err: any) {
@@ -261,7 +261,7 @@ const activeSessions = await db.query.sessions.findMany({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ allOthers: true })
       });
-      const data = await res.json();
+      const data = await res.json() as any;
       if (!res.ok) throw new Error(data.error || 'Failed to revoke sessions');
       window.location.reload();
     } catch (err: any) {

@@ -17,7 +17,7 @@ export const PUT: APIRoute = async (ctx) => {
   if (!id) return new Response(JSON.stringify({ error: "Missing ID" }), { status: 400 });
 
   const db = getDb(env as any);
-  const body = await ctx.request.json();
+  const body = await ctx.request.json() as any;
   const { title, content } = body;
 
   try {

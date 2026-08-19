@@ -1,10 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { env } from "cloudflare:workers";
 
 
-const userId = await Astro.session.get('userId');
-const session = userId ? { user: { id: userId, role: await Astro.session.get('role'), name: await Astro.session.get('name') } } : null;
+const userId = await Astro.session?.get('userId');
+const session = userId ? { user: { id: userId, role: await Astro.session?.get('role'), name: await Astro.session?.get('name') } } : null;
 
 if (!session) {
   return Astro.redirect('/admin/login');
@@ -67,7 +66,7 @@ if (!session) {
   async function loadArticles() {
     try {
       const res = await fetch('/api/articles');
-      const articles = await res.json();
+      const articles = await res.json() as any;
       const list = document.getElementById('articles-list');
       if (!list) return;
 

@@ -15,7 +15,7 @@ export const POST: APIRoute = async (context) => {
   }
 
   try {
-    const body = await request.json();
+    const body = await request.json() as any;
     const { name, username, password } = body;
 
     if (!name || !username || !password) {

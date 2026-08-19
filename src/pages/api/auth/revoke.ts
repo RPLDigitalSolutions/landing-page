@@ -15,7 +15,7 @@ export const POST: APIRoute = async (context) => {
   }
 
   try {
-    const body = await request.json();
+    const body = await request.json() as any;
     const { sessionId, allOthers } = body;
 
     const db = drizzle((env as any).DB, { schema });

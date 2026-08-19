@@ -6,8 +6,8 @@ import { users } from '../../../db/schema';
 import { desc } from 'drizzle-orm';
 
 
-const userId = await Astro.session.get('userId');
-const session = userId ? { user: { id: userId, role: await Astro.session.get('role'), name: await Astro.session.get('name') } } : null;
+const userId = await Astro.session?.get('userId');
+const session = userId ? { user: { id: userId, role: await Astro.session?.get('role'), name: await Astro.session?.get('name') } } : null;
 
 if (!session) {
   return Astro.redirect('/admin/login');
@@ -128,7 +128,7 @@ const allUsers = await db.query.users.findMany({
         });
 
         if (!res.ok) {
-          const data = await res.json();
+          const data = await res.json() as any;
           throw new Error(data.error || 'Failed to delete user');
         }
 

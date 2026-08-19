@@ -7,8 +7,8 @@ import { articles } from '../../db/schema';
 import { eq } from 'drizzle-orm';
 
 
-const userId = await Astro.session.get('userId');
-const session = userId ? { user: { id: userId, role: await Astro.session.get('role'), name: await Astro.session.get('name') } } : null;
+const userId = await Astro.session?.get('userId');
+const session = userId ? { user: { id: userId, role: await Astro.session?.get('role'), name: await Astro.session?.get('name') } } : null;
 
 if (!session) {
   return Astro.redirect('/admin/login');

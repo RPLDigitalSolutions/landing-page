@@ -1,8 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 
 <Layout title="Login to CMS">
+  <head>
+    <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  </head>
   <main class="min-h-screen bg-black flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
       <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-white">
@@ -45,6 +50,8 @@ import Layout from '../../layouts/Layout.astro';
             </div>
           </div>
 
+          <div class="cf-turnstile pt-2" data-sitekey={siteKey} data-theme="dark"></div>
+
           <div class="pt-4">
             <button
               type="submit"
@@ -68,6 +75,7 @@ import Layout from '../../layouts/Layout.astro';
     const formData = new FormData(form);
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
+    const turnstileResponse = formData.get('cf-turnstile-response') as string;
 
     try {
       const res = await fetch('/api/auth/login', {
@@ -75,10 +83,10 @@ import Layout from '../../layouts/Layout.astro';
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password, turnstileResponse })
       });
       
-      const data = await res.json();
+      const data = await res.json() as any;
 
       if (!res.ok) {
         alert(data.error || 'Login failed');

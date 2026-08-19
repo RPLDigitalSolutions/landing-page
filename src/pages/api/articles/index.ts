@@ -31,7 +31,7 @@ export const POST: APIRoute = async (ctx) => {
   }
 
   const db = getDb(env as any);
-  const body = await ctx.request.json();
+  const body = await ctx.request.json() as any;
   const { title, content } = body;
 
   if (!title || !content) {

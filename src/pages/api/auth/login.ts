@@ -9,8 +9,36 @@ export const POST: APIRoute = async (context) => {
   const { request, session } = context;
   
   try {
-    const body = await request.json();
-    const { username, password } = body;
+    if (!session) {
+      return new Response(JSON.stringify({ error: "Session is not configured" }), { status: 500 });
+    }
+
+    const body = await request.json() as any;
+    const { username, password, turnstileResponse } = body;
+    
+    if (!turnstileResponse) {
+      return new Response(JSON.stringify({ error: "Turnstile token is missing" }), { status: 400 });
+    }
+
+    const turnstileSecret = (env as any).TURNSTILE_SECRET_KEY;
+    if (!turnstileSecret) {
+      return new Response(JSON.stringify({ error: "Turnstile is not configured on the server" }), { status: 500 });
+    }
+
+    const verificationForm = new FormData();
+    verificationForm.append('secret', turnstileSecret);
+    verificationForm.append('response', turnstileResponse);
+    verificationForm.append('remoteip', request.headers.get('cf-connecting-ip') || '');
+
+    const turnstileResult = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body: verificationForm
+    });
+    
+    const turnstileOutcome = await turnstileResult.json() as any;
+    if (!turnstileOutcome.success) {
+      return new Response(JSON.stringify({ error: "Turnstile verification failed" }), { status: 403 });
+    }
     
     const db = drizzle((env as any).DB, { schema });
     
@@ -42,10 +70,10 @@ export const POST: APIRoute = async (context) => {
     });
 
     // Set user info and sessionId in the Astro KV session
-    await session.set('userId', user.id);
-    await session.set('role', user.role);
-    await session.set('name', user.name);
-    await session.set('sessionId', sessionId);
+    session.set('userId', user.id);
+    session.set('role', user.role);
+    session.set('name', user.name);
+    session.set('sessionId', sessionId);
     
     return new Response(JSON.stringify({ success: true }));
   } catch (err: any) {

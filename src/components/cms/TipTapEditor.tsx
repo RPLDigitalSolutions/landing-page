@@ -115,7 +115,6 @@ export default function TipTapEditor({
       editor.chain()
         .focus()
         .insertContent(`<a href="${url}">${text}</a>`)
-        .removeEmptyTextStyle()
         .unsetLink()
         .insertContent(' ')
         .run();
