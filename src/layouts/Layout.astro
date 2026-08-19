@@ -55,7 +55,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
 	</head>
-	<body class="antialiased font-mono selection:bg-white selection:text-black">
+	<body class="antialiased font-mono selection:bg-white selection:text-black overflow-x-hidden">
 		<slot />
 	</body>
 </html>
@@ -93,17 +93,17 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     toggleBtn?.addEventListener('click', toggleMenu);
 
     // Smooth scroll for hash links
-    const scrollLinks = document.querySelectorAll('a[href^="/#"]');
+    const scrollLinks = document.querySelectorAll('a[href^="/#"], a[href^="#"]');
     scrollLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         const href = link.getAttribute('href');
         if (href) {
-          const targetId = href.replace('/#', '');
+          const targetId = href.replace('/#', '').replace('#', ''); // Support both /# and #
           const el = document.getElementById(targetId);
           if (el) {
             e.preventDefault();
             el.scrollIntoView({ behavior: 'smooth' });
-            window.history.pushState(null, '', '#' + targetId);
+            // Remove pushState so URL doesn't show the #hash
           }
         }
         // Auto close mobile menu after clicking a link

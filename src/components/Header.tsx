@@ -1,4 +1,4 @@
-import { getWhatsAppLink, siteConfig } from '../config';
+import { siteConfig } from '../config';
 
 const navItems = [
   { label: 'Capabilities', href: '/#capabilities' },
@@ -30,7 +30,7 @@ export default function Header() {
 
         {/* Desktop Contact */}
         <div className="hidden md:block">
-          <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-white transition-colors">Contact</a>
+          <a href="/#contact" className="text-zinc-400 hover:text-white transition-colors">Contact</a>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -59,9 +59,7 @@ export default function Header() {
           </a>
         ))}
         <a 
-          href={getWhatsAppLink()} 
-          target="_blank" 
-          rel="noopener noreferrer" 
+          href="/#contact" 
           className="text-3xl text-white mt-8"
         >
           Contact

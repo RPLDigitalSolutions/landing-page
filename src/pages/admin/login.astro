@@ -2,6 +2,12 @@
 import Layout from '../../layouts/Layout.astro';
 import { env } from 'cloudflare:workers';
 
+// Redirect to dashboard if already logged in
+const userId = await Astro.session?.get('userId');
+if (userId) {
+  return Astro.redirect('/admin/dashboard');
+}
+
 const siteKey = env?.PUBLIC_TURNSTILE_SITE_KEY || import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 

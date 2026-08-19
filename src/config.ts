@@ -7,6 +7,7 @@ export const siteConfig = {
   whatsappMessage: "Halo RPL Digital Solutions, saya tertarik untuk mendiskusikan sebuah project."
 };
 
-export const getWhatsAppLink = () => {
-  return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(siteConfig.whatsappMessage)}`;
+export const getWhatsAppLink = (customMessage?: string) => {
+  const message = customMessage || siteConfig.whatsappMessage;
+  return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(message)}`;
 };

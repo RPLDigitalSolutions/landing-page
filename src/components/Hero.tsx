@@ -1,5 +1,3 @@
-import { getWhatsAppLink } from '../config';
-
 export default function Hero() {
   return (
     <section className="py-40 md:py-48">
@@ -12,9 +10,7 @@ export default function Hero() {
       </p>
       <div>
         <a 
-          href={getWhatsAppLink()} 
-          target="_blank" 
-          rel="noopener noreferrer"
+          href="/#contact" 
           className="group inline-flex items-center gap-4 text-lg font-medium text-white"
         >
           <span>Start a project</span>

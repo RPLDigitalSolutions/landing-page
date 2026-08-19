@@ -36,7 +36,7 @@ if (rawText.length > 160) {
     <Header />
     <main class="py-24 min-h-[70vh]">
       <div class="mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">{post.title}</h1>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 break-words">{post.title}</h1>
         <time class="text-zinc-500 font-mono">
           {new Date(post.createdAt).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -46,7 +46,7 @@ if (rawText.length > 160) {
         </time>
       </div>
       
-      <article class="prose prose-invert prose-zinc max-w-none text-zinc-300 font-sans" set:html={post.content}>
+      <article class="prose prose-invert prose-zinc max-w-none text-zinc-300 font-sans break-words" set:html={post.content}>
       </article>
       
       <div class="mt-16 pt-8 border-t border-zinc-800">
