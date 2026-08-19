@@ -1,8 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { env } from 'cloudflare:workers';
 
-const runtimeEnv = Astro.locals.runtime?.env || {};
-const siteKey = runtimeEnv.PUBLIC_TURNSTILE_SITE_KEY || import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+const siteKey = env?.PUBLIC_TURNSTILE_SITE_KEY || import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 
 <Layout title="Login to CMS">

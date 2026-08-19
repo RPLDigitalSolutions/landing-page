@@ -4,6 +4,12 @@ const portfolios = [
     desc: "Alat pencatatan keuangan berdasarkan kategori, dilengkapi dengan alat statistik dan dienkripsi menggunakan AES-256.",
     github: "https://github.com/RPLDS-Bot/money-tracker",
     live: "https://money-tracker.0x69.workers.dev/",
+  },
+  {
+    title: "SPP Rizky",
+    desc: "Sistem Informasi Pembayaran SPP sederhana untuk mempermudah pencatatan pembayaran.",
+    github: "https://github.com/RPLDigitalSolutions/spp-rizky",
+    live: "https://spp-rizky.0x69.workers.dev",
   }
 ];
 
