@@ -59,3 +59,56 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 		<slot />
 	</body>
 </html>
+
+<script>
+  // Script ini dieksekusi murni di client-side (Vanilla JS) 
+  // agar performa lebih ringan dan terhindar dari error React SSR Hooks.
+  // Pindah ke Layout.astro agar berfungsi di semua halaman (index, blog, posts).
+  document.addEventListener('DOMContentLoaded', () => {
+    // Mobile Menu Toggle
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+    const overlay = document.getElementById('mobile-menu-overlay');
+    const textOpen = toggleBtn?.querySelector('.toggle-text-open');
+    const textClose = toggleBtn?.querySelector('.toggle-text-close');
+    
+    let isOpen = false;
+
+    const toggleMenu = () => {
+      isOpen = !isOpen;
+      if (isOpen) {
+        overlay?.classList.remove('opacity-0', 'pointer-events-none');
+        overlay?.classList.add('opacity-100', 'pointer-events-auto');
+        textOpen?.classList.add('hidden');
+        textClose?.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // prevent scrolling in background
+      } else {
+        overlay?.classList.add('opacity-0', 'pointer-events-none');
+        overlay?.classList.remove('opacity-100', 'pointer-events-auto');
+        textOpen?.classList.remove('hidden');
+        textClose?.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    };
+
+    toggleBtn?.addEventListener('click', toggleMenu);
+
+    // Smooth scroll for hash links
+    const scrollLinks = document.querySelectorAll('a[href^="/#"]');
+    scrollLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (href) {
+          const targetId = href.replace('/#', '');
+          const el = document.getElementById(targetId);
+          if (el) {
+            e.preventDefault();
+            el.scrollIntoView({ behavior: 'smooth' });
+            window.history.pushState(null, '', '#' + targetId);
+          }
+        }
+        // Auto close mobile menu after clicking a link
+        if (isOpen) toggleMenu();
+      });
+    });
+  });
+</script>
