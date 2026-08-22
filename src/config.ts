@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "RPL Digital Solutions",
-  description: "Fast, precise, and built for scale. Jasa pembuatan custom software (Web, Android, AI/ML, IoT) terpercaya mulai dari 500K IDR.",
+  description: "Fast, precise, and built for scale. Jasa pembuatan custom software (Web, Android, AI/ML, IoT) di Bandar Lampung, Lampung, mulai dari 500K IDR.",
   url: "https://rpldigitalsolutions.tech", // Ganti dengan URL domain asli Anda nantinya
   ogImage: "https://rpldigitalsolutions.tech/og-image.png", // Ganti dengan path URL gambar banner Anda
   whatsappNumber: "62895610120719", // Ganti dengan nomor WhatsApp yang asli (format: 628...)

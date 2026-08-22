@@ -11,33 +11,106 @@ const db = getDb(env as any);
 const allPosts = await db.query.articles.findMany({
   orderBy: [desc(articles.createdAt)]
 });
+
+// Helper for excerpt and reading time
+function getPostExcerpt(content: string, maxLen = 180) {
+  const clean = content.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  if (clean.length <= maxLen) return clean;
+  const cut = clean.substring(0, maxLen);
+  const lastSpace = cut.lastIndexOf(' ');
+  return (lastSpace > 0 ? cut.substring(0, lastSpace) : cut) + '...';
+}
+
+function getReadingTime(content: string) {
+  const clean = content.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  const words = clean.split(' ').filter(Boolean).length;
+  const minutes = Math.max(1, Math.ceil(words / 180));
+  return `${minutes} min read`;
+}
 ---
 
-<Layout title="Blog" description="Kumpulan artikel dan insight terbaru dari tim RPL Digital Solutions." ogType="website" twitterCard="summary">
-  <div class="max-w-5xl mx-auto px-6 md:px-12">
-    <Header />
-    <main class="py-24 min-h-[70vh]">
-      <h1 class="text-4xl font-bold mb-12">Blog.</h1>
-      
-      <div class="flex flex-col gap-8 mb-16">
+<Layout 
+  title="Dispatches" 
+  description="Wawasan teknis, arsitektur software, dan catatan engineering dari tim RPL Digital Solutions di Bandar Lampung." 
+  ogType="website" 
+  twitterCard="summary"
+>
+  <div class="max-w-7xl mx-auto px-6 lg:px-24">
+    <Header client:load />
+
+    <main class="pt-32 md:pt-44 pb-24 md:pb-36 min-h-[80vh]">
+      {/* Editorial Header */}
+      <div class="mb-16 md:mb-24">
+        <div class="section-label mb-8">
+          <span>00 / Dispatches & Insights</span>
+        </div>
+
+        <h1 
+          data-line-reveal
+          className="font-serif font-light text-paper leading-[1.04] text-[clamp(2.75rem,8vw,6.5rem)] tracking-[-0.025em] mb-6"
+        >
+          <span class="ln"><i>Engineering</i></span>
+          <span class="ln"><i class="italic font-normal">Journal.</i></span>
+        </h1>
+
+        <p class="font-serif italic text-paper/60 text-lg md:text-2xl font-light max-w-2xl leading-relaxed">
+          Catatan arsitektur perangkat lunak, optimalisasi sistem, dan eksplorasi teknologi dari studio kami di Bandar Lampung.
+        </p>
+      </div>
+
+      {/* Article List */}
+      <div class="flex flex-col">
         {allPosts.length === 0 ? (
-          <p class="text-zinc-500">No articles found.</p>
+          <div class="border-t border-rule py-16 text-center">
+            <p class="font-serif italic text-2xl text-paper/40 mb-2">Belum ada artikel publikasi.</p>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-paper/30">Nantikan rilis wawasan teknis berikutnya.</p>
+          </div>
         ) : (
-          allPosts.map((post) => (
-            <a href={`/posts/${post.slug}`} class="group flex flex-col border-b border-zinc-800 pb-8 pt-4 hover:border-zinc-500 transition-colors">
-              <h2 class="text-2xl font-medium text-zinc-300 group-hover:text-white transition-colors break-words">{post.title}</h2>
-              <time class="text-zinc-500 mt-2 font-mono text-sm">
-                {new Date(post.createdAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </time>
-            </a>
-          ))
+          allPosts.map((post, index) => {
+            const excerpt = getPostExcerpt(post.content);
+            const readTime = getReadingTime(post.content);
+            const formattedDate = new Date(post.createdAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            });
+
+            return (
+              <article 
+                class="reveal group border-t border-rule py-10 md:py-14 grid grid-cols-1 md:grid-cols-[10rem_1fr] lg:grid-cols-[14rem_1fr] gap-6 md:gap-12 items-start"
+                style={{ transitionDelay: `${index * 80}ms` }}
+              >
+                {/* Left Meta: Index + Date + Read Time */}
+                <div class="flex md:flex-col items-baseline md:items-start justify-between md:justify-start gap-2 font-mono text-xs text-paper/35">
+                  <span class="text-paper/20 tracking-[0.2em]">0{index + 1}</span>
+                  <time datetime={new Date(post.createdAt).toISOString()} class="uppercase tracking-widest text-[0.6875rem]">
+                    {formattedDate}
+                  </time>
+                  <span class="text-[0.625rem] text-paper/25 hidden md:block">
+                    {readTime}
+                  </span>
+                </div>
+
+                {/* Right Content: Title + Excerpt */}
+                <div class="max-w-3xl">
+                  <a href={`/posts/${post.slug}`} class="block group/link">
+                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-serif font-light text-paper tracking-[-0.015em] leading-[1.15] mb-4 group-hover/link:text-white transition-colors">
+                      {post.title}
+                    </h2>
+                    <p class="text-paper/60 font-mono text-xs md:text-sm leading-relaxed max-w-2xl">
+                      {excerpt}
+                    </p>
+                  </a>
+                </div>
+              </article>
+            );
+          })
         )}
+        {/* Bottom border */}
+        <div class="border-t border-rule w-full"></div>
       </div>
     </main>
+
     <Footer />
   </div>
 </Layout>

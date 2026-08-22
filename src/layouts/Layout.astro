@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { siteConfig } from '../config';
+import AtmosphericBg from '../components/AtmosphericBg.astro';
 
 interface Props {
 	title?: string;
@@ -23,10 +24,10 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 ---
 
 <!doctype html>
-<html lang="en" class="bg-black text-white">
+<html lang="id">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
@@ -50,26 +51,24 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 		<meta property="twitter:description" content={description} />
 		<meta property="twitter:image" content={image} />
 		
-		<!-- Google Fonts: JetBrains Mono -->
+		<!-- Google Fonts: Cormorant Garamond (Pear-inspired serif) & JetBrains Mono -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
 	</head>
-	<body class="antialiased font-mono selection:bg-white selection:text-black overflow-x-hidden">
-		<slot />
+	<body class="antialiased font-mono text-paper selection:bg-paper selection:text-press" style="background-color: #0b0a09;">
+		<AtmosphericBg />
+		<div class="relative" style="z-index: 1;">
+			<slot />
+		</div>
 	</body>
 </html>
 
 <script>
-  // Script ini dieksekusi murni di client-side (Vanilla JS) 
-  // agar performa lebih ringan dan terhindar dari error React SSR Hooks.
-  // Pindah ke Layout.astro agar berfungsi di semua halaman (index, blog, posts).
   document.addEventListener('DOMContentLoaded', () => {
     // Mobile Menu Toggle
     const toggleBtn = document.getElementById('mobile-menu-toggle');
     const overlay = document.getElementById('mobile-menu-overlay');
-    const textOpen = toggleBtn?.querySelector('.toggle-text-open');
-    const textClose = toggleBtn?.querySelector('.toggle-text-close');
     
     let isOpen = false;
 
@@ -78,37 +77,90 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       if (isOpen) {
         overlay?.classList.remove('opacity-0', 'pointer-events-none');
         overlay?.classList.add('opacity-100', 'pointer-events-auto');
-        textOpen?.classList.add('hidden');
-        textClose?.classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // prevent scrolling in background
+        document.body.style.overflow = 'hidden'; 
       } else {
         overlay?.classList.add('opacity-0', 'pointer-events-none');
         overlay?.classList.remove('opacity-100', 'pointer-events-auto');
-        textOpen?.classList.remove('hidden');
-        textClose?.classList.add('hidden');
         document.body.style.overflow = '';
       }
     };
 
     toggleBtn?.addEventListener('click', toggleMenu);
 
-    // Smooth scroll for hash links
+    // Smooth scroll for hash links and close menu on click
     const scrollLinks = document.querySelectorAll('a[href^="/#"], a[href^="#"]');
     scrollLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         const href = link.getAttribute('href');
         if (href) {
-          const targetId = href.replace('/#', '').replace('#', ''); // Support both /# and #
+          const targetId = href.replace('/#', '').replace('#', ''); 
           const el = document.getElementById(targetId);
           if (el) {
             e.preventDefault();
             el.scrollIntoView({ behavior: 'smooth' });
-            // Remove pushState so URL doesn't show the #hash
           }
         }
-        // Auto close mobile menu after clicking a link
         if (isOpen) toggleMenu();
       });
     });
+
+    // Intersection Observer for scroll reveal animations
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Also trigger any internal .ln line reveals
+          entry.target.querySelectorAll('.ln').forEach((ln, idx) => {
+            setTimeout(() => ln.classList.add('visible'), idx * 120);
+          });
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal, [data-line-reveal]').forEach(el => {
+      revealObserver.observe(el);
+    });
+
+    // Hero element reveals on page load
+    setTimeout(() => {
+      const hero = document.getElementById('hero');
+      if (hero) {
+        hero.querySelectorAll('.ln').forEach((ln, idx) => {
+          setTimeout(() => ln.classList.add('visible'), 200 + idx * 140);
+        });
+        setTimeout(() => {
+          hero.querySelectorAll('.hero-stand').forEach(el => el.classList.add('visible', 'opacity-100', 'translate-y-0'));
+        }, 550);
+        setTimeout(() => {
+          const cta = hero.querySelector('.hero-cta');
+          cta?.classList.add('visible', 'opacity-100', 'translate-y-0');
+        }, 850);
+      }
+    }, 150);
+
+    // Chapter Rail active section tracking
+    const sections = document.querySelectorAll('section[id]');
+    const railDots = document.querySelectorAll('.chapter-rail-dot');
+    
+    if (sections.length > 0 && railDots.length > 0) {
+      const sectionObserver = new IntersectionObserver((entries) => {
+        const visibleSections = entries.filter(e => e.isIntersecting);
+        if (visibleSections.length > 0) {
+          visibleSections.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+          const activeId = visibleSections[0].target.getAttribute('id');
+          
+          railDots.forEach(dot => {
+            if (dot.getAttribute('data-target') === activeId) {
+              dot.classList.add('active');
+            } else {
+              dot.classList.remove('active');
+            }
+          });
+        }
+      }, { rootMargin: '-20% 0px -55% 0px', threshold: [0.1, 0.3, 0.6] });
+
+      sections.forEach(sec => sectionObserver.observe(sec));
+    }
   });
 </script>

@@ -2,19 +2,88 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --font-sans: "JetBrains Mono", monospace;
+  --font-sans: "Cormorant Garamond", Georgia, serif;
   --font-mono: "JetBrains Mono", monospace;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  
+  --color-press: #0b0a09;
+  --color-paper: #f2f1ed;
+  --color-ink: #1d1c19;
+  --color-ink-soft: #33322d;
+  --color-muted: #8a8780;
+  --color-dim: #2a2926;
+  --color-rule: #2a2926;
+  --color-accent: #c8ff00;
 }
 
 @layer base {
   html, body {
-    background-color: #000000;
-    color: #ffffff;
-    font-family: var(--font-mono);
+    background-color: var(--color-press);
+    color: var(--color-paper);
+    scroll-behavior: smooth;
   }
   
   ::selection {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: var(--color-paper);
+    color: var(--color-press);
+  }
+}
+
+@layer utilities {
+  .ln {
+    display: block;
+    overflow: hidden;
+    margin: -0.1em 0;
+    padding: 0.1em 0;
+  }
+  
+  .ln i {
+    display: block;
+    font-style: normal;
+    transform: translateY(110%);
+    transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
+  .ln.visible i,
+  .visible .ln i {
+    transform: translateY(0);
+  }
+
+  .ch {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .ch.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(242, 241, 237, 0.4);
+  }
+  .section-label::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    background-color: var(--color-rule);
   }
 }
